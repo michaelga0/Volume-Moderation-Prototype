@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js')
+const { SlashCommandBuilder, MessageFlags } = require('discord.js')
 const { getVoiceConnection } = require('@discordjs/voice')
 const { stopAudioStreams } = require('../audio/voiceRecorder')
 
@@ -12,7 +12,7 @@ module.exports = {
       if (!connection) {
         return interaction.reply({
           content: 'I am not currently in a voice channel in this server.',
-          ephemeral: true
+          flags: MessageFlags.Ephemeral
         })
       }
 
@@ -20,7 +20,7 @@ module.exports = {
       if (!member.voice.channel || member.voice.channel.id !== connection.joinConfig.channelId) {
         return interaction.reply({
           content: 'You must be in the same voice channel as me to make me leave.',
-          ephemeral: true
+          flags: MessageFlags.Ephemeral
         })
       }
 
@@ -31,13 +31,13 @@ module.exports = {
 
       await interaction.reply({
         content: 'Left the voice channel and stopped recording.',
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       })
     } catch (error) {
       console.error('Error leaving voice channel:', error)
       await interaction.reply({
         content: 'Failed to leave the voice channel.',
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       })
     }
   }

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js')
+const { SlashCommandBuilder, MessageFlags } = require('discord.js')
 const { joinVoiceChannel } = require('@discordjs/voice')
 const { startAudioStream } = require('../audio/voiceRecorder')
 
@@ -15,7 +15,7 @@ module.exports = {
         console.log('User is not in a voice channel.')
         return interaction.reply({
           content: 'Please join a voice channel first.',
-          ephemeral: true
+          flags: MessageFlags.Ephemeral
         })
       }
 
@@ -34,13 +34,13 @@ module.exports = {
       console.log('Joined voice channel successfully.')
       await interaction.reply({
         content: 'Successfully joined the voice channel and started recording!',
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       })
     } catch (error) {
       console.error('Error joining voice channel:', error)
       await interaction.reply({
         content: 'Failed to join the voice channel.',
-        ephemeral: true
+        flags: MessageFlags.Ephemeral
       })
     }
   }

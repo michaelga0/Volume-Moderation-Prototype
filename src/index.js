@@ -1,7 +1,7 @@
 require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
-const { Client, Collection, GatewayIntentBits, Routes } = require("discord.js");
+const { Client, Collection, GatewayIntentBits, Routes, MessageFlags } = require("discord.js");
 const { REST } = require("@discordjs/rest");
 
 const client = new Client({
@@ -44,7 +44,7 @@ client.on("interactionCreate", async (interaction) => {
         console.error(error);
         await interaction.reply({
             content: "There was an error while executing this command!",
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
     }
 });
