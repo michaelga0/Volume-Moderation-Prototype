@@ -3,6 +3,20 @@ const { getVoiceConnection } = require('@discordjs/voice')
 const { stopMonitoring } = require('../audio/voiceMonitor')
 const { writeLog } = require('../utils/logger')
 
+/**
+ * 
+ * @param {String} guildId Guild ID of the voice channel the bot is in.
+ * @returns 
+ */
+async function doForceLeave(guildId) {
+  const connection = getVoiceConnection(guildId)
+  if (!connection) return false
+  stopMonitoring()
+  connection.destroy()
+  writeLog('Successfully left the voice channel and stopped recording.')
+  return true
+}
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('leave')
@@ -16,7 +30,6 @@ module.exports = {
           flags: MessageFlags.Ephemeral
         })
       }
-
       const member = await interaction.guild.members.fetch(interaction.user.id)
       if (!member.voice.channel || member.voice.channel.id !== connection.joinConfig.channelId) {
         return interaction.reply({
@@ -24,13 +37,11 @@ module.exports = {
           flags: MessageFlags.Ephemeral
         })
       }
-      stopMonitoring()
-      connection.destroy()
+      await doForceLeave(interaction.guild.id)
       await interaction.reply({
-        content: 'Left the voice channel and stopped recording.',
+        content: 'Left the voice channel.',
         flags: MessageFlags.Ephemeral
       })
-      writeLog('Successfully left the voice channel and stopped recording.')
     } catch (error) {
       writeLog(`Error leaving voice channel: ${error}`)
       await interaction.reply({
@@ -38,5 +49,6 @@ module.exports = {
         flags: MessageFlags.Ephemeral
       })
     }
-  }
+  },
+  doForceLeave
 }

@@ -1,7 +1,8 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js')
-const { joinVoiceChannel } = require('@discordjs/voice')
+const { joinVoiceChannel, getVoiceConnection } = require('@discordjs/voice')
 const { startMonitoring } = require('../audio/voiceMonitor')
 const { writeLog } = require('../utils/logger')
+const { doForceLeave } = require('./leave')
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -9,6 +10,12 @@ module.exports = {
     .setDescription('Join a voice channel and begin monitoring'),
   async execute(interaction) {
     try {
+      const existingConnection = getVoiceConnection(interaction.guild.id)
+      if (existingConnection) {
+        // Force-leave with no channel check, same code as /leave except skipping the ephemeral part
+        await doForceLeave(interaction.guild.id)
+      }
+
       const member = await interaction.guild.members.fetch(interaction.user.id)
       const voiceChannel = member.voice.channel
       if (!voiceChannel) {
@@ -17,15 +24,19 @@ module.exports = {
           flags: MessageFlags.Ephemeral
         })
       }
+
       const connection = joinVoiceChannel({
         channelId: voiceChannel.id,
         guildId: voiceChannel.guild.id,
         adapterCreator: voiceChannel.guild.voiceAdapterCreator,
         selfDeaf: false
       })
-      startMonitoring(connection, voiceChannel, 5000)
+
+      // Pass the client (interaction.client) so we can attach voiceState listener if needed
+      startMonitoring(interaction.client, connection, voiceChannel, 5000)
+
       await interaction.reply({
-        content: 'Monitoring started.',
+        content: 'Joined the voice channel.',
         flags: MessageFlags.Ephemeral
       })
       writeLog(`Joined and started monitoring channel: ${voiceChannel.name}`)
