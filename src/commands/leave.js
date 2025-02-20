@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js')
 const { getVoiceConnection } = require('@discordjs/voice')
-const { stopAudioStreams } = require('../audio/voiceRecorder')
+const { stopMonitoring } = require('../audio/voiceMonitor')
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -23,10 +23,7 @@ module.exports = {
           flags: MessageFlags.Ephemeral
         })
       }
-
-      // Stop and finalize all user audio streams
-      stopAudioStreams()
-
+      stopMonitoring()
       connection.destroy()
 
       await interaction.reply({
@@ -34,7 +31,7 @@ module.exports = {
         flags: MessageFlags.Ephemeral
       })
     } catch (error) {
-      console.error('Error leaving voice channel:', error)
+      console.error(error)
       await interaction.reply({
         content: 'Failed to leave the voice channel.',
         flags: MessageFlags.Ephemeral

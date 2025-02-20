@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js')
 const { joinVoiceChannel } = require('@discordjs/voice')
-const { startAudioStream } = require('../audio/voiceRecorder')
+const { startMonitoring } = require('../audio/voiceMonitor')
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -12,28 +12,20 @@ module.exports = {
       const voiceChannel = member.voice.channel
 
       if (!voiceChannel) {
-        console.log('User is not in a voice channel.')
         return interaction.reply({
           content: 'Please join a voice channel first.',
           flags: MessageFlags.Ephemeral
         })
       }
-
-      console.log(`Attempting to join the voice channel: ${voiceChannel.name}`)
-
       const connection = joinVoiceChannel({
         channelId: voiceChannel.id,
         guildId: voiceChannel.guild.id,
         adapterCreator: voiceChannel.guild.voiceAdapterCreator,
         selfDeaf: false
       })
-
-      // Start capturing audio from everyone in the channel
-      startAudioStream(connection, voiceChannel)
-
-      console.log('Joined voice channel successfully.')
+      startMonitoring(connection, voiceChannel, 5000)
       await interaction.reply({
-        content: 'Successfully joined the voice channel and started recording!',
+        content: 'Monitoring started.',
         flags: MessageFlags.Ephemeral
       })
     } catch (error) {
