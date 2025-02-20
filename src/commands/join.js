@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js')
 const { joinVoiceChannel } = require('@discordjs/voice')
 const { startMonitoring } = require('../audio/voiceMonitor')
+const { writeLog } = require('../utils/logger')
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -10,7 +11,6 @@ module.exports = {
     try {
       const member = await interaction.guild.members.fetch(interaction.user.id)
       const voiceChannel = member.voice.channel
-
       if (!voiceChannel) {
         return interaction.reply({
           content: 'Please join a voice channel first.',
@@ -28,8 +28,9 @@ module.exports = {
         content: 'Monitoring started.',
         flags: MessageFlags.Ephemeral
       })
+      writeLog(`Joined and started monitoring channel: ${voiceChannel.name}`)
     } catch (error) {
-      console.error('Error joining voice channel:', error)
+      writeLog(`Error joining voice channel: ${error}`)
       await interaction.reply({
         content: 'Failed to join the voice channel.',
         flags: MessageFlags.Ephemeral

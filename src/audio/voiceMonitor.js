@@ -1,5 +1,6 @@
 const { EndBehaviorType } = require('@discordjs/voice')
 const prism = require('prism-media')
+const { writeLog } = require('../utils/logger')
 
 // 48k samples/sec, 2 channels, 16 bits => 4 bytes/sample * 48k = 192k bytes/sec
 const BYTES_PER_SECOND = 48000 * 4
@@ -22,11 +23,15 @@ function startMonitoring(connection, voiceChannel, threshold = THRESHOLD) {
     decoder.on('data', chunk => {
       buffer = Buffer.concat([buffer, chunk])
       if (buffer.length >= WINDOW_SIZE) {
-        if (computeRMS(buffer) > threshold) member.send("You're too loud. Please lower your volume.")
+        if (computeRMS(buffer) > threshold) {
+          member.send("You're too loud. Please lower your volume.")
+          writeLog(`Warned ${member.user.tag} for exceeding volume threshold.`)
+        }
         buffer = Buffer.alloc(0)
       }
     })
     recorders.set(member.id, { opus, decoder, buffer })
+    writeLog(`Started monitoring for user: ${member.user.tag}`)
   })
 }
 
@@ -36,8 +41,10 @@ function stopMonitoring() {
     r.decoder.destroy()
   }
   recorders.clear()
+  writeLog('Stopped all monitoring streams.')
 }
 
+// Use the Root Mean Squared method to calculate loudness
 function computeRMS(buf) {
   let sumSq = 0
   for (let i = 0; i < buf.length; i += 2) {
