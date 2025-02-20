@@ -33,7 +33,7 @@ module.exports = {
       })
 
       // Pass the client (interaction.client) so we can attach voiceState listener if needed
-      startMonitoring(interaction.client, connection, voiceChannel, 5000)
+      startMonitoring(interaction.client, connection, voiceChannel)
 
       await interaction.reply({
         content: 'Joined the voice channel.',

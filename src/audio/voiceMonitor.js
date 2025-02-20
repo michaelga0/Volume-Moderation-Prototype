@@ -8,7 +8,7 @@ const BYTES_PER_SECOND = 48000 * 4
 const DURATION = 3
 const WINDOW_SIZE = BYTES_PER_SECOND * DURATION
 // Volume above this RMS threshold is considered "too loud"
-const DEFAULT_THRESHOLD = 5000
+const DEFAULT_THRESHOLD = 10000
 
 // userId -> { opus, decoder, buffer, member }
 const recorders = new Map()
