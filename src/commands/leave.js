@@ -4,7 +4,7 @@ const { stopMonitoring } = require('../audio/voiceMonitor')
 const { writeLog } = require('../utils/logger')
 
 /**
- * 
+ * Leave the current voice channel.
  * @param {String} guildId Guild ID of the voice channel the bot is in.
  * @returns 
  */

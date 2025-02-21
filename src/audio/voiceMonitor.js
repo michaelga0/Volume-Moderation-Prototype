@@ -21,7 +21,7 @@ let botClient = null
 
 /**
  * Initializer
- * @param {} client 
+ * @param {Client} client - The Discord.js client instance.
  */
 function initVoiceStateListener(client) {
   if (!voiceStateListenerAttached) {
@@ -34,10 +34,10 @@ function initVoiceStateListener(client) {
 /**
  * Monitors all current (non-bot) members in the given voiceChannel.
  * 
- * @param {*} client - The Discord.js client instance.
- * @param {*} connection - The established voice connection for the target channel.
- * @param {*} voiceChannel - The voice channel to monitor.
- * @param {*} [threshold=DEFAULT_THRESHOLD] - RMS volume threshold considered "too loud."
+ * @param {Client} client - The Discord.js client instance.
+ * @param {VoiceConnection} connection - The established voice connection for the target channel.
+ * @param {VoiceChannel} voiceChannel - The voice channel to monitor.
+ * @param {number} [threshold=DEFAULT_THRESHOLD] - The RMS volume threshold considered "too loud."
  */
 function startMonitoring(client, connection, voiceChannel, threshold = DEFAULT_THRESHOLD) {
   initVoiceStateListener(client)
@@ -52,8 +52,6 @@ function startMonitoring(client, connection, voiceChannel, threshold = DEFAULT_T
   })
   writeLog(`Started monitoring channel: ${voiceChannel.name}`)
 }
-
-
 
 /**
  * Stops monitoring everyone in the channel and resets.
@@ -154,7 +152,7 @@ function isChannelEmpty(channel) {
 }
 
 /**
- * Use the Root Mean Squared method to calculate loudness
+ * Use the Root Mean Squared method to calculate loudness.
  */
 function computeRMS(buf) {
   let sumSq = 0

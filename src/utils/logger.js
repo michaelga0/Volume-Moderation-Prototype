@@ -11,6 +11,9 @@ let currentLogFile = ''
 let linesWritten = 0
 let logStream = null
 
+/**
+ * Create a new log file.
+ */
 function initNewLogFile() {
   if (!fs.existsSync(LOGS_DIR)) {
     fs.mkdirSync(LOGS_DIR, { recursive: true })
@@ -20,6 +23,11 @@ function initNewLogFile() {
   linesWritten = 0
 }
 
+/**
+ * Write to the current log file.
+ * @param {String} message - the message to be written to the log file
+ * @returns 
+ */
 function writeLog(message) {
   if (DEVELOPER_MODE) {
     // If dev mode is on, log to console instead of file
