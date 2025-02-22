@@ -5,7 +5,7 @@ const { writeLog } = require('../utils/logger')
 
 /**
  * Leave the current voice channel.
- * @param {String} guildId Guild ID of the voice channel the bot is in.
+ * @param {string} guildId Guild ID of the voice channel the bot is in.
  * @returns 
  */
 async function doForceLeave(guildId) {
@@ -13,7 +13,7 @@ async function doForceLeave(guildId) {
   if (!connection) return false
   stopMonitoring()
   connection.destroy()
-  writeLog('Successfully left the voice channel and stopped recording.')
+  writeLog('Successfully left the voice channel and stopped monitoring.')
   return true
 }
 

@@ -119,9 +119,13 @@ function createRecorder(member, receiver) {
   decoder.on('data', (chunk) => {
     buffer = Buffer.concat([buffer, chunk])
     if (buffer.length >= WINDOW_SIZE) {
-      if (computeRMS(buffer) > currentThreshold) {
-        member.send("You're too loud. Please lower your volume.")
-        writeLog(`Warned ${member.user.tag} for exceeding volume threshold.`)
+      const rms = computeRMS(buffer)
+      if (rms > currentThreshold && botClient) {
+        botClient.emit('thresholdExceeded', {
+          member,
+          rms,
+          guildId: member.guild.id
+        })
       }
       buffer = Buffer.alloc(0)
     }

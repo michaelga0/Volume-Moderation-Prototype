@@ -22,6 +22,16 @@ for (const file of commandFiles) {
   commands.push(command.data.toJSON())
 }
 
+const eventsPath = path.join(__dirname, 'events')
+const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'))
+
+for (const file of eventFiles) {
+  const event = require(path.join(eventsPath, file))
+  if (event.name && typeof event.execute === 'function') {
+    client.on(event.name, (...args) => event.execute(...args))
+  }
+}
+
 const rest = new REST({ version: "10" }).setToken(process.env.BOT_TOKEN)
 
 client.once("ready", async () => {

@@ -25,7 +25,7 @@ function initNewLogFile() {
 
 /**
  * Write to the current log file.
- * @param {String} message - the message to be written to the log file
+ * @param {string} message - the message to be written to the log file
  * @returns 
  */
 function writeLog(message) {
