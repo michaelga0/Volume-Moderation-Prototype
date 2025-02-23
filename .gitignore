@@ -127,4 +127,4 @@ dist
 .pnp.*
 
 # sqlite3 db file
-.sqlite3
+*.sqlite
