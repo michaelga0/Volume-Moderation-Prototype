@@ -7,7 +7,7 @@ const BYTES_PER_SECOND = 48000 * 4
 // Duration in seconds for volume checks
 const DURATION = 3
 const WINDOW_SIZE = BYTES_PER_SECOND * DURATION
-// Volume above this RMS threshold is considered "too loud"
+// Volume above this RMS threshold is considered too loud
 const DEFAULT_THRESHOLD = 10000
 
 // userId -> { opus, decoder, buffer, member }
@@ -37,7 +37,7 @@ function initVoiceStateListener(client) {
  * @param {Client} client - The Discord.js client instance.
  * @param {VoiceConnection} connection - The established voice connection for the target channel.
  * @param {VoiceChannel} voiceChannel - The voice channel to monitor.
- * @param {number} [threshold=DEFAULT_THRESHOLD] - The RMS volume threshold considered "too loud."
+ * @param {number} [threshold=DEFAULT_THRESHOLD] - The RMS volume threshold considered too loud.
  */
 function startMonitoring(client, connection, voiceChannel, threshold = DEFAULT_THRESHOLD) {
   initVoiceStateListener(client)

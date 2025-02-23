@@ -11,9 +11,11 @@ module.exports = {
    */
   async execute({ member, rms, guildId }) {
     try {
-      let violation = await Violation.findOne({ userId: member.id, guildId })
+      let violation = await Violation.findOne({
+        where: { userId: member.id, guildId }
+      })
       if (!violation) {
-        violation = new Violation({
+        violation = await Violation.create({
           userId: member.id,
           guildId,
           violationsCount: 0

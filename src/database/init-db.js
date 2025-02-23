@@ -1,43 +1,52 @@
 require('dotenv').config()
-const mongoose = require('mongoose')
+const path = require('path')
+const { Sequelize, DataTypes } = require('sequelize')
 
-const localDbName = 'volume-moderation'
-const defaultLocalUri = `mongodb://127.0.0.1:27017/${localDbName}`
+const DB_TYPE = process.env.DB_TYPE || 'sqlite'
 
-const uri = process.env.MONGO_URI || defaultLocalUri
+let sequelize
 
-const violationSchema = new mongoose.Schema({
+if (DB_TYPE === 'sqlite') {
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: path.join(__dirname, '../../db.sqlite'),
+    logging: false
+  })
+} else {
+  sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+    host: process.env.DB_HOST,
+    dialect: DB_TYPE,
+    logging: false
+  })
+}
+
+const Violation = sequelize.define('Violation', {
   userId: {
-    type: String,
-    required: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
   guildId: {
-    type: String,
-    required: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
   violationsCount: {
-    type: Number,
-    default: 0
+    type: DataTypes.INTEGER,
+    defaultValue: 0
   },
   lastViolationAt: {
-    type: Date,
-    default: Date.now
+    type: DataTypes.DATE,
+    defaultValue: Sequelize.NOW
   }
+}, {
+  indexes: [{ unique: true, fields: ['userId', 'guildId'] }]
 })
 
-violationSchema.index({ userId: 1, guildId: 1 }, { unique: true })
-
-const Violation = mongoose.model('Violation', violationSchema)
-
-/**
- * Initializes a MongoDB connection using MONGO_URI from .env if provided,
- * otherwise defaults to mongodb://127.0.0.1:27017/volume-moderation
- */
 async function initDB() {
-  await mongoose.connect(uri, {})
+  await sequelize.sync({ alter: true })
 }
 
 module.exports = {
+  sequelize,
   Violation,
   initDB
 }
