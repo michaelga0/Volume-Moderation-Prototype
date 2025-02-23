@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js')
 const { getVoiceConnection } = require('@discordjs/voice')
-const { stopMonitoring } = require('../audio/voiceMonitor')
+const { stopMonitoring } = require('../audio/voice-monitor')
 const { writeLog } = require('../utils/logger')
 
 /**

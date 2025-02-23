@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, MessageFlags } = require('discord.js')
 const { joinVoiceChannel, getVoiceConnection } = require('@discordjs/voice')
-const { startMonitoring } = require('../audio/voiceMonitor')
+const { startMonitoring } = require('../audio/voice-monitor')
 const { writeLog } = require('../utils/logger')
 const { doForceLeave } = require('./leave')
 
