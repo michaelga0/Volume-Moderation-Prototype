@@ -8,6 +8,11 @@ A Discord bot that joins a voice channel, monitors user volume levels in real ti
 2. **Discord Application**  
    - Create a new application and bot in the [Discord Developer Portal](https://discord.com/developers/applications).  
    - Copy your bot token (you will place this into a `.env` file).
+3. **MongoDB**  
+   - For local development, install and run MongoDB.
+     By default, the bot will connect to:
+       mongodb://127.0.0.1:27017/volume-moderation
+   - Alternatively, set the MONGO_URI variable in your env file.
 
 ## Installation
 
