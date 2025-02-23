@@ -4,6 +4,7 @@ const path = require("path")
 const { Client, Collection, GatewayIntentBits, Routes, MessageFlags } = require("discord.js")
 const { REST } = require("@discordjs/rest")
 const { writeLog } = require("./utils/logger")
+const { initDB } = require("./database/init-db")
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
@@ -36,6 +37,15 @@ const rest = new REST({ version: "10" }).setToken(process.env.BOT_TOKEN)
 
 client.once("ready", async () => {
   writeLog("Bot is online")
+
+  try {
+    await initDB()
+    writeLog("Database connection established.")
+  } catch (err) {
+    writeLog(`Error initializing the database: ${err}`)
+    process.exit(1);
+  }
+
   try {
     await rest.put(
       Routes.applicationCommands(client.user.id, process.env.TEST_GUILD_ID),
