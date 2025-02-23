@@ -22,7 +22,7 @@ module.exports = {
       violation.violationsCount += 1
       violation.lastViolationAt = new Date()
       await violation.save()
-      await member.send("You're too loud. Please lower your volume.")
+      await member.send('You\'re too loud. Please lower your volume.')
       writeLog(
         `Warned ${member.user.tag} for exceeding volume threshold (RMS: ${rms}) in guild ${guildId}. ` +
         `Total Violations: ${violation.violationsCount}`

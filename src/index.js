@@ -1,10 +1,10 @@
-require("dotenv").config()
-const fs = require("fs")
-const path = require("path")
-const { Client, Collection, GatewayIntentBits, Routes, MessageFlags } = require("discord.js")
-const { REST } = require("@discordjs/rest")
-const { writeLog } = require("./utils/logger")
-const { initDB } = require("./database/init-db")
+require('dotenv').config()
+const fs = require('fs')
+const path = require('path')
+const { Client, Collection, GatewayIntentBits, Routes, MessageFlags } = require('discord.js')
+const { REST } = require('@discordjs/rest')
+const { writeLog } = require('./utils/logger')
+const { initDB } = require('./database/init-db')
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
@@ -12,10 +12,10 @@ const client = new Client({
 
 client.commands = new Collection()
 const commands = []
-const commandsPath = path.join(__dirname, "commands")
+const commandsPath = path.join(__dirname, 'commands')
 const commandFiles = fs
   .readdirSync(commandsPath)
-  .filter((file) => file.endsWith(".js"))
+  .filter((file) => file.endsWith('.js'))
 
 for (const file of commandFiles) {
   const command = require(path.join(commandsPath, file))
@@ -33,14 +33,14 @@ for (const file of eventFiles) {
   }
 }
 
-const rest = new REST({ version: "10" }).setToken(process.env.BOT_TOKEN)
+const rest = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN)
 
-client.once("ready", async () => {
-  writeLog("Bot is online")
+client.once('ready', async () => {
+  writeLog('Bot is online')
 
   try {
     await initDB()
-    writeLog("Database connection established.")
+    writeLog('Database connection established.')
   } catch (err) {
     writeLog(`Error initializing the database: ${err}`)
     process.exit(1);
@@ -56,7 +56,7 @@ client.once("ready", async () => {
   }
 })
 
-client.on("interactionCreate", async (interaction) => {
+client.on('interactionCreate', async (interaction) => {
   if (!interaction.isChatInputCommand()) return
   const command = client.commands.get(interaction.commandName)
   if (!command) return
@@ -65,7 +65,7 @@ client.on("interactionCreate", async (interaction) => {
   } catch (error) {
     writeLog(`Error in command execution: ${error}`)
     await interaction.reply({
-      content: "There was an error while executing this command!",
+      content: 'There was an error while executing this command!',
       flags: MessageFlags.Ephemeral,
     })
   }
