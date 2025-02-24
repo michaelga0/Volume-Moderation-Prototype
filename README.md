@@ -11,8 +11,8 @@ A Discord bot that joins a voice channel, monitors user volume levels in real ti
 3. **SQL Database**
    - For local development, the bot defaults to using SQLite. A file named `db.sqlite` will be created in the root of the project.
    - Alternatively, set the following environment variables in your `.env` file:
-     ```
-     DB_TYPE=your_database_type # Any type supported by Sequelize ORM
+     ```env
+     DB_TYPE=your_database_type          # Any type supported by Sequelize ORM
      DB_HOST=your_database_host
      DB_NAME=your_database_name
      DB_USER=your_database_user
