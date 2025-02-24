@@ -36,6 +36,14 @@ const Violation = sequelize.define('Violation', {
   lastViolationAt: {
     type: DataTypes.DATE,
     defaultValue: Sequelize.NOW
+  },
+  punishmentStatus: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  exempt: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
   }
 }, {
   indexes: [{ unique: true, fields: ['userId', 'guildId'] }]
