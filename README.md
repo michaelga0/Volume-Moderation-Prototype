@@ -26,7 +26,7 @@ A Discord bot that joins a voice channel, monitors user volume levels in real ti
    ```bash
    npm install
    ```
-3. **Create a `.env` file** with:
+3. **Create a `.env` file** in the project root with:
    ```env
    BOT_TOKEN=YOUR_DISCORD_BOT_TOKEN_HERE
    ```
