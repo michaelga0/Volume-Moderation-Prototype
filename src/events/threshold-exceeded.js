@@ -7,10 +7,9 @@ const { sendDM } = require('../utils/direct-message')
 module.exports = {
   name: 'thresholdExceeded',
   /**
-   * @param {Object} payload
-   * @param {GuildMember} payload.member
-   * @param {number} payload.rms
-   * @param {string} payload.guildId
+ * @param {GuildMember} member - The Discord guild member to check.
+   * @param {number} rms - The root mean squared value threshold that has been exceeded.
+   * @param {string} guildId - The Discord guild to check
    */
   async execute({ member, rms, guildId }) {
     try {

@@ -2,34 +2,12 @@ const { MUTE_STATUS, TIMEOUT_STATUS, KICK_STATUS } = require('../utils/constants
 const { executePunishment } = require('./punishment')
 
 /**
- * Checks if the bot has the necessary permissions to perform an action on the member.
- *
- * For "mute", it checks for the MUTE_MEMBERS permission and that the bot's highest role is above the member's.
- * For "timeout", it checks if the member is moderatable.
- * For "kick", it checks if the member is kickable.
- *
- * @param {GuildMember} member - The Discord guild member to check.
- * @param {string} action - The action to check ("mute", "timeout", or "kick").
- * @returns {boolean} True if the bot can perform the action on the member.
- */
-function hasPermission(member, action) {
-  if (action === 'mute') {
-    return member.guild.members.me.permissions.has('MUTE_MEMBERS')
-  } else if (action === 'timeout') {
-    return member.moderatable
-  } else if (action === 'kick') {
-    return member.kickable
-  }
-  return false
-}
-
-/**
  * Applies exactly one new punishment threshold if the user hasn't already reached it.
  * It sends a DM to the user informing them of the impending punishment (or fallback) before acting.
  * 
  * @param {GuildMember} member - The Discord guild member to punish.
- * @param {Object} violation - The violation record.
- * @param {Object} serverSettings - The row from server_settings with threshold & enabled flags.
+ * @param {Violation} violation - The violation record.
+ * @param {ServerSettings} serverSettings - The row from server_settings with threshold & enabled flags.
  * @returns {Promise<void>} Resolves once the appropriate punishment is applied (or fallback attempted).
  */
 async function applyNextPunishment(member, violation, serverSettings) {
@@ -75,7 +53,7 @@ async function applyNextPunishment(member, violation, serverSettings) {
     return
   }
 
-  await executePunishment(member, violation, nextPun, serverSettings, hasPermission)
+  await executePunishment(member, violation, nextPun, serverSettings)
 }
 
 /**
@@ -85,7 +63,7 @@ async function applyNextPunishment(member, violation, serverSettings) {
  * @param {number} violations_count - Number of violations so far.
  * @param {number} punishment_status - The user's current punishment status.
  * @param {boolean} exempt - If true, user is exempt from punishments.
- * @param {Object} serverSettings - The row from server_settings with threshold & enabled flags.
+ * @param {ServerSettings} serverSettings - The row from server_settings with threshold & enabled flags.
  * @returns {string|null} A message about how many warnings remain, or null if exempt or fully punished.
  */
 function calculateWarningsUntilNext(violations_count, punishment_status, exempt, serverSettings) {

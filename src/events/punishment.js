@@ -7,13 +7,12 @@ const { sendDM } = require('../utils/direct-message')
  * It checks for available lower-level punishments and sends a DM before attempting them.
  * 
  * @param {GuildMember} member - The user to punish.
- * @param {Object} violation - Violation record from DB.
+ * @param {Violation} violation - Violation record from DB.
  * @param {number} failedStatus - The numeric status that just failed.
- * @param {Object} serverSettings - The row from server_settings with threshold & enabled flags.
- * @param {Function} hasPermission - The permission checking function (from moderation.js).
+ * @param {ServerSettings} serverSettings - The row from server_settings with threshold & enabled flags.
  * @returns {Promise<void>} - Resolves once a fallback punishment is applied or none are available.
  */
-async function fallbackToLesserPunishment(member, violation, failedStatus, serverSettings, hasPermission) {
+async function fallbackToLesserPunishment(member, violation, failedStatus, serverSettings) {
   if (failedStatus === KICK_STATUS) {
     // Fallback from kick to timeout, then to mute.
     if (hasPermission(member, 'timeout')) {
@@ -36,6 +35,8 @@ async function fallbackToLesserPunishment(member, violation, failedStatus, serve
       violation.punishment_status = MUTE_STATUS
       await violation.save()
       writeLog(`Successfully applied fallback punishment (mute) to ${member.user.tag}`)
+    } else {
+      writeLog(`Insufficient permission to punish ${member.user.tag}`)
     }
   } else if (failedStatus === TIMEOUT_STATUS || failedStatus === MUTE_STATUS) {
     // Fallback from timeout to mute.
@@ -50,6 +51,8 @@ async function fallbackToLesserPunishment(member, violation, failedStatus, serve
       violation.punishment_status = MUTE_STATUS
       await violation.save()
       writeLog(`Successfully applied fallback punishment (mute) to ${member.user.tag}`)
+    } else {
+      writeLog(`Insufficient permission to punish ${member.user.tag}`)
     }
   }
 }
@@ -58,18 +61,17 @@ async function fallbackToLesserPunishment(member, violation, failedStatus, serve
  * Executes a punishment for the given member based on the nextPun object.
  * If the punishment cannot be performed due to lack of permissions, attempts a fallback punishment.
  *
- * @param {GuildMember} member
- * @param {Object} violation
+ * @param {GuildMember} member - The Discord guild member to punish.
+ * @param {Violation} violation - The violation record.
  * @param {Object} nextPun - Contains { name, status, threshold }
- * @param {Object} serverSettings
- * @param {Function} hasPermission
- * @returns {Promise<void>}
+ * @param {ServerSettings} serverSettings - The row from server_settings with threshold & enabled flags.
+ * @returns {Promise<void>} - Resolves when a punishment is executed or there are no valid punishments.
  */
-async function executePunishment(member, violation, nextPun, serverSettings, hasPermission) {
+async function executePunishment(member, violation, nextPun, serverSettings) {
   try {
     if (nextPun.name === 'mute') {
       if (!hasPermission(member, 'mute')) {
-        await fallbackToLesserPunishment(member, violation, MUTE_STATUS, serverSettings, hasPermission)
+        await fallbackToLesserPunishment(member, violation, MUTE_STATUS, serverSettings)
         return
       }
       await sendDM(member, `You will be muted in the server "${member.guild.name}" for repeated volume violations.`)
@@ -80,7 +82,7 @@ async function executePunishment(member, violation, nextPun, serverSettings, has
 
     } else if (nextPun.name === 'timeout') {
       if (!hasPermission(member, 'timeout')) {
-        await fallbackToLesserPunishment(member, violation, TIMEOUT_STATUS, serverSettings, hasPermission)
+        await fallbackToLesserPunishment(member, violation, TIMEOUT_STATUS, serverSettings)
         return
       }
       await sendDM(
@@ -92,7 +94,7 @@ async function executePunishment(member, violation, nextPun, serverSettings, has
 
     } else if (nextPun.name === 'kick') {
       if (!hasPermission(member, 'kick')) {
-        await fallbackToLesserPunishment(member, violation, KICK_STATUS, serverSettings, hasPermission)
+        await fallbackToLesserPunishment(member, violation, KICK_STATUS, serverSettings)
         return
       }
       await sendDM(
@@ -111,7 +113,28 @@ async function executePunishment(member, violation, nextPun, serverSettings, has
   }
 }
 
+/**
+ * Checks if the bot has the necessary permissions to perform an action on the member.
+ *
+ * For "mute", it checks for the MUTE_MEMBERS permission and that the bot's highest role is above the member's.
+ * For "timeout", it checks if the member is moderatable.
+ * For "kick", it checks if the member is kickable.
+ *
+ * @param {GuildMember} member - The Discord guild member to check.
+ * @param {string} action - The action to check ("mute", "timeout", or "kick").
+ * @returns {boolean} True if the bot can perform the action on the member.
+ */
+function hasPermission(member, action) {
+  if (action === 'mute') {
+    return member.guild.members.me.permissions.has('MUTE_MEMBERS')
+  } else if (action === 'timeout') {
+    return member.moderatable
+  } else if (action === 'kick') {
+    return member.kickable
+  }
+  return false
+}
+
 module.exports = {
-  fallbackToLesserPunishment,
   executePunishment
 }
