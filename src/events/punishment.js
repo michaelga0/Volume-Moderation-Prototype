@@ -19,7 +19,7 @@ async function fallbackToLesserPunishment(member, violation, failedStatus, serve
       await member.send(
         `You will be timed out for ${serverSettings.timeout_duration} minute(s) in the server "${member.guild.name}" as a fallback for repeated volume violations.`
       )
-      await member.timeout(serverSettings.timeout_duration * 60_000, 'Repeated volume violations (fallback)')
+      await member.timeout(serverSettings.timeout_duration * 60000, 'Repeated volume violations (fallback)')
       violation.punishment_status = TIMEOUT_STATUS
       await violation.save()
     } else if (hasPermission(member, 'mute')) {
@@ -79,7 +79,7 @@ async function executePunishment(member, violation, nextPun, serverSettings, has
       await member.send(
         `You will be timed out for ${serverSettings.timeout_duration} minute(s) in the server "${member.guild.name}" for repeated volume violations.`
       )
-      await member.timeout(serverSettings.timeout_duration * 60_000, 'Repeated volume violations')
+      await member.timeout(serverSettings.timeout_duration * 60000, 'Repeated volume violations')
       violation.punishment_status = TIMEOUT_STATUS
 
     } else if (nextPun.name === 'kick') {
