@@ -13,9 +13,11 @@ const { sendDM } = require('../utils/direct-message')
  * @returns {Promise<void>} - Resolves once a fallback punishment is applied or none are available.
  */
 async function fallbackToLesserPunishment(member, violation, failedStatus, serverSettings) {
+  let fallbackApplied = false
+
   if (failedStatus === KICK_STATUS) {
     // Fallback from kick to timeout, then to mute.
-    if (hasPermission(member, 'timeout')) {
+    if (serverSettings.timeout_enabled && hasPermission(member, 'timeout')) {
       await sendDM(
         member,
         `You will be timed out for ${serverSettings.timeout_duration} minute(s) in the server "${member.guild.name}" as a fallback for repeated volume violations.`
@@ -24,7 +26,8 @@ async function fallbackToLesserPunishment(member, violation, failedStatus, serve
       violation.punishment_status = TIMEOUT_STATUS
       await violation.save()
       writeLog(`Successfully applied fallback punishment (timeout) to ${member.user.tag}`)
-    } else if (hasPermission(member, 'mute')) {
+      fallbackApplied = true
+    } else if (serverSettings.mute_enabled && hasPermission(member, 'mute')) {
       await sendDM(
         member,
         `You will be muted in the server "${member.guild.name}" as a fallback for repeated volume violations.`
@@ -35,12 +38,11 @@ async function fallbackToLesserPunishment(member, violation, failedStatus, serve
       violation.punishment_status = MUTE_STATUS
       await violation.save()
       writeLog(`Successfully applied fallback punishment (mute) to ${member.user.tag}`)
-    } else {
-      writeLog(`Insufficient permission to punish ${member.user.tag}`)
+      fallbackApplied = true
     }
   } else if (failedStatus === TIMEOUT_STATUS || failedStatus === MUTE_STATUS) {
     // Fallback from timeout to mute.
-    if (hasPermission(member, 'mute')) {
+    if (serverSettings.mute_enabled && hasPermission(member, 'mute')) {
       await sendDM(
         member,
         `You will be muted in the server "${member.guild.name}" as a fallback for repeated volume violations.`
@@ -51,9 +53,12 @@ async function fallbackToLesserPunishment(member, violation, failedStatus, serve
       violation.punishment_status = MUTE_STATUS
       await violation.save()
       writeLog(`Successfully applied fallback punishment (mute) to ${member.user.tag}`)
-    } else {
-      writeLog(`Insufficient permission to punish ${member.user.tag}`)
+      fallbackApplied = true
     }
+  }
+
+  if (!fallbackApplied) {
+    writeLog(`insufficient permissions to punish ${member.user.tag}`)
   }
 }
 
