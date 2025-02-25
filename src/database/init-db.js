@@ -23,11 +23,13 @@ if (DB_TYPE === 'sqlite') {
 const Violation = sequelize.define('violation', {
   user_id: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: false
   },
   guild_id: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    unique: false
   },
   violations_count: {
     type: DataTypes.INTEGER,
