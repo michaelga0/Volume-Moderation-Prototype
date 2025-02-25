@@ -60,7 +60,7 @@ async function applyNextPunishment(member, violation, serverSettings) {
       }
       violation.punishment_status = MUTE_STATUS
     } else if (nextPun.name === 'timeout') {
-      await member.timeout(60000, 'Repeated volume violations')
+      await member.timeout(serverSettings.timeout_duration * 60000, 'Repeated volume violations')
       violation.punishment_status = TIMEOUT_STATUS
     } else if (nextPun.name === 'kick') {
       await member.kick('Repeated volume violations')
@@ -70,7 +70,7 @@ async function applyNextPunishment(member, violation, serverSettings) {
   } catch (err) {
     writeLog(`Failed to ${nextPun.name} ${member.user.tag}: ${handleErrorMsg(err)}`)
     if (err.rawError?.code === 50013) {
-      await fallbackToLesserPunishment(member, violation, nextPun.status)
+      await fallbackToLesserPunishment(member, violation, nextPun.status, serverSettings)
     }
   }
 }
@@ -121,12 +121,13 @@ function calculateWarningsUntilNext(violations_count, punishment_status, exempt,
  * @param {GuildMember} member - The user to punish.
  * @param {Object} violation - Violation record from DB.
  * @param {number} failedStatus - The numeric status that just failed
+ * @param {Object} serverSettings - The row from server_settings with threshold & enabled flags.
  * @returns {Promise<void>} - Resolves once punishment is successful or all valid punishments are attempted
  */
-async function fallbackToLesserPunishment(member, violation, failedStatus) {
+async function fallbackToLesserPunishment(member, violation, failedStatus, serverSettings) {
   if (failedStatus === KICK_STATUS) {
     try {
-      await member.timeout(600000, 'Repeated volume violations (fallback)')
+      await member.timeout(serverSettings.timeout_duration * 60000, 'Repeated volume violations (fallback)')
       violation.punishment_status = TIMEOUT_STATUS
       await violation.save()
     } catch (timeoutErr) {

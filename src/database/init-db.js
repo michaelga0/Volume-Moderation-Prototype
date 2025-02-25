@@ -67,6 +67,14 @@ const ServerSettings = sequelize.define('server_settings', {
     type: DataTypes.INTEGER,
     defaultValue: 9
   },
+  timeout_duration: {
+    type: DataTypes.INTEGER,
+    defaultValue: 1,
+    allowNull: false,
+    validate: {
+      min: 1
+    }
+  },
   mute_enabled: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
