@@ -1,7 +1,7 @@
 const { writeLog } = require('../utils/logger')
 
 const MUTE_STATUS = 1
-const DISCONNECT_STATUS = 2
+const TIMEOUT_STATUS = 2
 const KICK_STATUS = 3
 
 /**
@@ -30,11 +30,11 @@ async function applyNextPunishment(member, violation, serverSettings) {
       threshold: serverSettings.mute_threshold
     })
   }
-  if (serverSettings.disconnect_enabled) {
+  if (serverSettings.timeout_enabled) {
     punishments.push({
-      name: 'disconnect',
-      status: DISCONNECT_STATUS,
-      threshold: serverSettings.disconnect_threshold
+      name: 'timeout',
+      status: TIMEOUT_STATUS,
+      threshold: serverSettings.timeout_threshold
     })
   }
   if (serverSettings.kick_enabled) {
@@ -59,11 +59,9 @@ async function applyNextPunishment(member, violation, serverSettings) {
         await member.voice.setMute(true, 'Repeated volume violations')
       }
       violation.punishment_status = MUTE_STATUS
-    } else if (nextPun.name === 'disconnect') {
-      if (member.voice.channel) {
-        await member.voice.disconnect('Repeated volume violations')
-      }
-      violation.punishment_status = DISCONNECT_STATUS
+    } else if (nextPun.name === 'timeout') {
+      await member.timeout(60000, 'Repeated volume violations')
+      violation.punishment_status = TIMEOUT_STATUS
     } else if (nextPun.name === 'kick') {
       await member.kick('Repeated volume violations')
       violation.punishment_status = KICK_STATUS
@@ -96,8 +94,8 @@ function calculateWarningsUntilNext(violations_count, punishment_status, exempt,
   if (serverSettings.mute_enabled) {
     punishments.push({ name: 'server mute', status: MUTE_STATUS, threshold: serverSettings.mute_threshold })
   }
-  if (serverSettings.disconnect_enabled) {
-    punishments.push({ name: 'voice disconnect', status: DISCONNECT_STATUS, threshold: serverSettings.disconnect_threshold })
+  if (serverSettings.timeout_enabled) {
+    punishments.push({ name: 'server timeout', status: TIMEOUT_STATUS, threshold: serverSettings.timeout_threshold })
   }
   if (serverSettings.kick_enabled) {
     punishments.push({ name: 'server kick', status: KICK_STATUS, threshold: serverSettings.kick_threshold })
@@ -128,14 +126,12 @@ function calculateWarningsUntilNext(violations_count, punishment_status, exempt,
 async function fallbackToLesserPunishment(member, violation, failedStatus) {
   if (failedStatus === KICK_STATUS) {
     try {
-      if (member.voice.channel) {
-        await member.voice.disconnect('Repeated volume violations (fallback)')
-      }
-      violation.punishment_status = DISCONNECT_STATUS
+      await member.timeout(600000, 'Repeated volume violations (fallback)')
+      violation.punishment_status = TIMEOUT_STATUS
       await violation.save()
-    } catch (dcErr) {
-      writeLog(`Failed fallback to disconnect ${member.user.tag}: ${handleErrorMsg(dcErr)}`)
-      if (dcErr.rawError?.code === 50013) {
+    } catch (timeoutErr) {
+      writeLog(`Failed fallback to timeout ${member.user.tag}: ${handleErrorMsg(timeoutErr)}`)
+      if (timeoutErr.rawError?.code === 50013) {
         try {
           if (member.voice.channel) {
             await member.voice.setMute(true, 'Repeated volume violations (fallback)')
@@ -147,7 +143,7 @@ async function fallbackToLesserPunishment(member, violation, failedStatus) {
         }
       }
     }
-  } else if (failedStatus === DISCONNECT_STATUS) {
+  } else if (failedStatus === TIMEOUT_STATUS) {
     try {
       if (member.voice.channel) {
         await member.voice.setMute(true, 'Repeated volume violations (fallback)')

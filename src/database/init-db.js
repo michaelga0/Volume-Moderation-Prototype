@@ -59,7 +59,7 @@ const ServerSettings = sequelize.define('server_settings', {
     type: DataTypes.INTEGER,
     defaultValue: 5
   },
-  disconnect_threshold: {
+  timeout_threshold: {
     type: DataTypes.INTEGER,
     defaultValue: 7
   },
@@ -71,7 +71,7 @@ const ServerSettings = sequelize.define('server_settings', {
     type: DataTypes.BOOLEAN,
     defaultValue: true
   },
-  disconnect_enabled: {
+  timeout_enabled: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
   },
