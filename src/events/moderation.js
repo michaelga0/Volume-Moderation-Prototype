@@ -1,5 +1,5 @@
-const { writeLog } = require('../utils/logger')
 const { MUTE_STATUS, TIMEOUT_STATUS, KICK_STATUS } = require('../utils/constants')
+const { executePunishment } = require('./punishment')
 
 /**
  * Checks if the bot has the necessary permissions to perform an action on the member.
@@ -25,7 +25,6 @@ function hasPermission(member, action) {
 
 /**
  * Applies exactly one new punishment threshold if the user hasn't already reached it.
- * Before executing the punishment, it checks whether the bot has permission to perform the action.
  * It sends a DM to the user informing them of the impending punishment (or fallback) before acting.
  * 
  * @param {GuildMember} member - The Discord guild member to punish.
@@ -38,7 +37,7 @@ async function applyNextPunishment(member, violation, serverSettings) {
     return
   }
 
-  if (violation.punishment_status === KICK_STATUS){
+  if (violation.punishment_status === KICK_STATUS) {
     violation.punishment_status = TIMEOUT_STATUS
   }
 
@@ -76,96 +75,7 @@ async function applyNextPunishment(member, violation, serverSettings) {
     return
   }
 
-  try {
-    if (nextPun.name === 'mute') {
-      if (!hasPermission(member, 'mute')) {
-        await fallbackToLesserPunishment(member, violation, MUTE_STATUS, serverSettings)
-        return
-      }
-      await member.send(`You will be muted in the server "${member.guild.name}" for repeated volume violations.`)
-      if (member.voice.channel) {
-        await member.voice.setMute(true, 'Repeated volume violations')
-      }
-      violation.punishment_status = MUTE_STATUS
-    } else if (nextPun.name === 'timeout') {
-      if (!hasPermission(member, 'timeout')) {
-        await fallbackToLesserPunishment(member, violation, TIMEOUT_STATUS, serverSettings)
-        return
-      }
-      await member.send(`You will be timed out for ${serverSettings.timeout_duration} minute(s) in the server "${member.guild.name}" for repeated volume violations.`)
-      await member.timeout(serverSettings.timeout_duration * 60000, 'Repeated volume violations')
-      violation.punishment_status = TIMEOUT_STATUS
-    } else if (nextPun.name === 'kick') {
-      if (!hasPermission(member, 'kick')) {
-        await fallbackToLesserPunishment(member, violation, KICK_STATUS, serverSettings)
-        return
-      }
-      // For kick, send DM before kicking
-      await member.send(`You will be kicked from the server "${member.guild.name}" for repeated volume violations.`)
-      await member.kick('Repeated volume violations')
-      violation.punishment_status = KICK_STATUS
-    }
-    await violation.save()
-  } catch (err) {
-    writeLog(`Failed to ${nextPun.name} ${member.user.tag}: ${handleErrorMsg(err)}`)
-  }
-}
-
-/**
- * Fallback logic if the intended punishment cannot be performed due to insufficient permissions.
- * It checks for available lower-level punishments and sends a DM before attempting them.
- * 
- * @param {GuildMember} member - The user to punish.
- * @param {Object} violation - Violation record from DB.
- * @param {number} failedStatus - The numeric status that just failed.
- * @param {Object} serverSettings - The row from server_settings with threshold & enabled flags.
- * @returns {Promise<void>} - Resolves once a fallback punishment is applied or none are available.
- */
-async function fallbackToLesserPunishment(member, violation, failedStatus, serverSettings) {
-  if (failedStatus === KICK_STATUS) {
-    // Fallback from kick to timeout, then to mute.
-    if (hasPermission(member, 'timeout')) {
-      await member.send(`You will be timed out for ${serverSettings.timeout_duration} minute(s) in the server "${member.guild.name}" as a fallback for repeated volume violations.`)
-      await member.timeout(serverSettings.timeout_duration * 60000, 'Repeated volume violations (fallback)')
-      violation.punishment_status = TIMEOUT_STATUS
-      await violation.save()
-    } else if (hasPermission(member, 'mute')) {
-      await member.send(`You will be muted in the server "${member.guild.name}" as a fallback for repeated volume violations.`)
-      if (member.voice.channel) {
-        await member.voice.setMute(true, 'Repeated volume violations (fallback)')
-      }
-      violation.punishment_status = MUTE_STATUS
-      await violation.save()
-    }
-  } else if (failedStatus === TIMEOUT_STATUS || failedStatus === MUTE_STATUS) {
-    // Fallback from timeout to mute.
-    if (hasPermission(member, 'mute')) {
-      await member.send(`You will be muted in the server "${member.guild.name}" as a fallback for repeated volume violations.`)
-      if (member.voice.channel) {
-        await member.voice.setMute(true, 'Repeated volume violations (fallback)')
-      }
-      violation.punishment_status = MUTE_STATUS
-      await violation.save()
-    }
-  }
-}
-
-/**
- * Helper to produce a short error message if err.rawError?.code === 50013, or log the entire error otherwise.
- * 
- * @param {Error & { rawError?: { code?: number } }} err - The error caught during a punishment operation.
- * @returns {string} A short or full string describing the error.
- */
-function handleErrorMsg(err) {
-  if (err.rawError?.code === 50013) {
-    return 'Missing permissions.'
-  }
-  return String(err)
-}
-
-module.exports = {
-  applyNextPunishment,
-  calculateWarningsUntilNext
+  await executePunishment(member, violation, nextPun, serverSettings, hasPermission)
 }
 
 /**
@@ -205,4 +115,9 @@ function calculateWarningsUntilNext(violations_count, punishment_status, exempt,
     warningsLeft = 1
   }
   return `You have ${warningsLeft} more warnings until a ${nextPun.name}.`
+}
+
+module.exports = {
+  applyNextPunishment,
+  calculateWarningsUntilNext
 }
