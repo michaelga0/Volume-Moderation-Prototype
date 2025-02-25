@@ -1,8 +1,5 @@
 const { writeLog } = require('../utils/logger')
-
-const MUTE_STATUS = 1
-const TIMEOUT_STATUS = 2
-const KICK_STATUS = 3
+const { MUTE_STATUS, TIMEOUT_STATUS, KICK_STATUS } = require('../utils/constants')
 
 /**
  * Checks if the bot has the necessary permissions to perform an action on the member.

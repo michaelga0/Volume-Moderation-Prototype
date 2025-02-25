@@ -1,8 +1,7 @@
 const { writeLog } = require('../utils/logger')
 const { Violation, ServerSettings } = require('../database/init-db')
 const { applyNextPunishment, calculateWarningsUntilNext } = require('./moderation')
-
-const KICK_STATUS = 3
+const { KICK_STATUS } = require('../utils/constants')
 
 module.exports = {
   name: 'thresholdExceeded',
