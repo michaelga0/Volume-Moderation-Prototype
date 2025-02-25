@@ -20,24 +20,24 @@ if (DB_TYPE === 'sqlite') {
   })
 }
 
-const Violation = sequelize.define('Violation', {
-  userId: {
+const Violation = sequelize.define('violation', {
+  user_id: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  guildId: {
+  guild_id: {
     type: DataTypes.STRING,
     allowNull: false
   },
-  violationsCount: {
+  violations_count: {
     type: DataTypes.INTEGER,
     defaultValue: 0
   },
-  lastViolationAt: {
+  last_violation_at: {
     type: DataTypes.DATE,
     defaultValue: Sequelize.NOW
   },
-  punishmentStatus: {
+  punishment_status: {
     type: DataTypes.INTEGER,
     defaultValue: 0
   },
@@ -46,7 +46,58 @@ const Violation = sequelize.define('Violation', {
     defaultValue: false
   }
 }, {
-  indexes: [{ unique: true, fields: ['userId', 'guildId'] }]
+  tableName: 'violation',
+  indexes: [{ unique: true, fields: ['user_id', 'guild_id'] }]
+})
+
+const ServerSettings = sequelize.define('server_settings', {
+  guild_id: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  mute_threshold: {
+    type: DataTypes.INTEGER,
+    defaultValue: 5
+  },
+  disconnect_threshold: {
+    type: DataTypes.INTEGER,
+    defaultValue: 7
+  },
+  kick_threshold: {
+    type: DataTypes.INTEGER,
+    defaultValue: 9
+  },
+  mute_enabled: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
+  disconnect_enabled: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
+  kick_enabled: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  },
+  violation_reset_days: {
+    type: DataTypes.INTEGER,
+    defaultValue: 1
+  },
+  violation_reset_hours: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  violation_reset_minutes: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  violation_reset_enabled: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
+  }
+}, {
+  tableName: 'server_settings',
+  indexes: [{ unique: true, fields: ['guild_id'] }]
 })
 
 async function initDB() {
@@ -56,5 +107,6 @@ async function initDB() {
 module.exports = {
   sequelize,
   Violation,
+  ServerSettings,
   initDB
 }
