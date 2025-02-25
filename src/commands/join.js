@@ -3,6 +3,7 @@ const { joinVoiceChannel, getVoiceConnection } = require('@discordjs/voice')
 const { startMonitoring } = require('../audio/voice-monitor')
 const { writeLog } = require('../utils/logger')
 const { doForceLeave } = require('./leave')
+const { ServerSettings } = require('../database/init-db')
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -10,6 +11,16 @@ module.exports = {
     .setDescription('Join a voice channel and begin monitoring'),
   async execute(interaction) {
     try {
+
+      let serverSettings = await ServerSettings.findOne({
+        where: { guild_id: interaction.guild.id }
+      })
+      if (!serverSettings) {
+        await ServerSettings.create({
+          guild_id: interaction.guild.id
+        })
+      }
+
       const existingConnection = getVoiceConnection(interaction.guild.id)
       if (existingConnection) {
         // Force-leave with no channel check, same code as /leave except skipping the ephemeral part
