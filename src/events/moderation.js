@@ -41,6 +41,10 @@ async function applyNextPunishment(member, violation, serverSettings) {
     return
   }
 
+  if (violation.punishment_status === KICK_STATUS){
+    violation.punishment_status = TIMEOUT_STATUS
+  }
+
   const { violations_count, punishment_status } = violation
 
   // Find next enabled punishment

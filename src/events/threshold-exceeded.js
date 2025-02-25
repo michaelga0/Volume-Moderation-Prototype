@@ -2,6 +2,8 @@ const { writeLog } = require('../utils/logger')
 const { Violation, ServerSettings } = require('../database/init-db')
 const { applyNextPunishment, calculateWarningsUntilNext } = require('./moderation')
 
+const KICK_STATUS = 3
+
 module.exports = {
   name: 'thresholdExceeded',
   /**
@@ -59,6 +61,8 @@ module.exports = {
 
       // Re-fetch to get updated punishmentStatus if it changed
       await violation.reload()
+
+      if (violation.punishment_status === KICK_STATUS) return
 
       let dmMessage = 'You\'re too loud. Please lower your volume.'
       const warningsLeftMsg = calculateWarningsUntilNext(
