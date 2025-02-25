@@ -23,13 +23,11 @@ if (DB_TYPE === 'sqlite') {
 const Violation = sequelize.define('violation', {
   user_id: {
     type: DataTypes.STRING,
-    allowNull: false,
-    unique: false
+    allowNull: false
   },
   guild_id: {
     type: DataTypes.STRING,
-    allowNull: false,
-    unique: false
+    allowNull: false
   },
   violations_count: {
     type: DataTypes.INTEGER,
@@ -49,7 +47,8 @@ const Violation = sequelize.define('violation', {
   }
 }, {
   tableName: 'violation',
-  indexes: [{ unique: true, fields: ['user_id', 'guild_id'] }]
+  // Make this unique when sequelize fixes this or switching off sqlite3
+  indexes: [{ fields: ['user_id', 'guild_id'] }]
 })
 
 const ServerSettings = sequelize.define('server_settings', {
@@ -111,6 +110,7 @@ const ServerSettings = sequelize.define('server_settings', {
 })
 
 async function initDB() {
+  // Remove this on prod
   await sequelize.sync({ alter: true })
 }
 
