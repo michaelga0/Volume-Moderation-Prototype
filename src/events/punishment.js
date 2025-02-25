@@ -22,6 +22,7 @@ async function fallbackToLesserPunishment(member, violation, failedStatus, serve
       await member.timeout(serverSettings.timeout_duration * 60000, 'Repeated volume violations (fallback)')
       violation.punishment_status = TIMEOUT_STATUS
       await violation.save()
+      writeLog(`Successfully applied fallback punishment (timeout) to ${member.user.tag}`)
     } else if (hasPermission(member, 'mute')) {
       await member.send(
         `You will be muted in the server "${member.guild.name}" as a fallback for repeated volume violations.`
@@ -31,6 +32,7 @@ async function fallbackToLesserPunishment(member, violation, failedStatus, serve
       }
       violation.punishment_status = MUTE_STATUS
       await violation.save()
+      writeLog(`Successfully applied fallback punishment (mute) to ${member.user.tag}`)
     }
   } else if (failedStatus === TIMEOUT_STATUS || failedStatus === MUTE_STATUS) {
     // Fallback from timeout to mute.
@@ -43,6 +45,7 @@ async function fallbackToLesserPunishment(member, violation, failedStatus, serve
       }
       violation.punishment_status = MUTE_STATUS
       await violation.save()
+      writeLog(`Successfully applied fallback punishment (mute) to ${member.user.tag}`)
     }
   }
 }
@@ -93,6 +96,7 @@ async function executePunishment(member, violation, nextPun, serverSettings, has
     }
 
     await violation.save()
+    writeLog(`Successfully executed punishment ${nextPun.name} for ${member.user.tag}`)
 
   } catch (err) {
     writeLog(`Failed to ${nextPun.name} ${member.user.tag}: ${String(err)}`)
