@@ -103,6 +103,15 @@ const ServerSettings = sequelize.define('server_settings', {
   violation_reset_enabled: {
     type: DataTypes.BOOLEAN,
     defaultValue: true
+  },
+  volume_threshold: {
+    type: DataTypes.DECIMAL(3, 0),
+    allowNull: false,
+    defaultValue: 50,
+    validate: {
+      min: 0,
+      max: 100
+    }
   }
 }, {
   tableName: 'server_settings',
