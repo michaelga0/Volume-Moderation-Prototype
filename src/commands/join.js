@@ -1,9 +1,12 @@
+require('dotenv').config()
 const { SlashCommandBuilder, MessageFlags } = require('discord.js')
 const { joinVoiceChannel, getVoiceConnection } = require('@discordjs/voice')
 const { startMonitoring } = require('../audio/voice-monitor')
 const { writeLog } = require('../utils/logger')
 const { doForceLeave } = require('./leave')
 const { ServerSettings } = require('../database/init-db')
+
+const DEVELOPER_MODE = process.env.DEVELOPER_MODE === 'true'
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -43,8 +46,12 @@ module.exports = {
         selfDeaf: false
       })
 
+      // Developer quiet mode threshold of 1000, so I don't get evicted
+      // volume threshold is a percentage, scale it between 2500 and 12500
+      const threshold = DEVELOPER_MODE ? 1000 : 2500 + (serverSettings.volume_threshold * 100)
+
       // Pass the client (interaction.client) so we can attach voiceState listener if needed
-      startMonitoring(interaction.client, connection, voiceChannel)
+      startMonitoring(interaction.client, connection, voiceChannel, threshold)
 
       await interaction.reply({
         content: 'Joined the voice channel.',

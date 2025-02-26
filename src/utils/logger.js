@@ -1,8 +1,9 @@
+require('dotenv').config()
 const fs = require('fs')
 const path = require('path')
 
 // Set this to true to enable console logs instead of file logs
-const DEVELOPER_MODE = false
+const DEVELOPER_MODE = process.env.DEVELOPER_MODE === 'true'
 
 const LOGS_DIR = path.join(__dirname, '../../logs')
 const MAX_LINES_PER_FILE = 10000
