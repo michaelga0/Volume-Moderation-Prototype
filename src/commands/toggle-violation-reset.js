@@ -5,7 +5,7 @@ const { writeLog } = require('../utils/logger')
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('toggleviolationreset')
-    .setDescription('Enable or disable the violation reset feature for this server.')
+    .setDescription('Enable or disable the violation counter reset timer for the server.')
     .addBooleanOption(option =>
       option
         .setName('enabled')
