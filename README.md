@@ -4,7 +4,7 @@ A Discord bot that joins a voice channel, monitors user volume levels in real ti
 
 ## Prerequisites
 
-1. **Node.js** (v16 or higher recommended)  
+1. **Node.js** (v22 or higher recommended)  
 2. **Discord Application**  
    - Create a new application and bot in the [Discord Developer Portal](https://discord.com/developers/applications).  
    - Copy your bot token (you will place this into a `.env` file).
