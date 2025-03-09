@@ -35,7 +35,6 @@ module.exports = {
         return
       }
 
-      // Validate the new duration
       if (newDuration < 1) {
         await interaction.reply({
           content: 'The timeout duration must be at least 1 minute.',
@@ -44,7 +43,6 @@ module.exports = {
         return
       }
 
-      // Update and save
       serverSettings.timeout_duration = newDuration
       await serverSettings.save()
 

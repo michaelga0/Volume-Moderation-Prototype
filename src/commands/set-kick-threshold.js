@@ -26,7 +26,6 @@ module.exports = {
         serverSettings = await ServerSettings.create({ guild_id: guildId })
       }
 
-      // If the punishment is disabled, let the user know and stop.
       if (!serverSettings.kick_enabled) {
         await interaction.reply({
           content: 'Kick is not enabled. Enable it before using this command.',
@@ -35,7 +34,6 @@ module.exports = {
         return
       }
 
-      // Validate existing thresholds
       const violationOccurred = await validate(serverSettings)
       if (violationOccurred) {
         writeLog(`Validation failed for guild ${guildId}, thresholds reset to defaults. Command aborted.`)
@@ -55,7 +53,6 @@ module.exports = {
         return
       }
 
-      // Check relevant conditions
       if (serverSettings.mute_enabled) {
         if (serverSettings.mute_threshold >= newThreshold) {
           return failValidation(interaction, guildId)
@@ -67,7 +64,6 @@ module.exports = {
         }
       }
 
-      // Update and save
       serverSettings.kick_threshold = newThreshold
       await serverSettings.save()
 
