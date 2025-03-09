@@ -32,7 +32,7 @@ A Discord bot that joins a voice channel, monitors user volume levels in real ti
    ```
 4. **Run the Bot**:
   ```bash
-  node src/index.js
+  node .
   ```
 ## Commands
 
