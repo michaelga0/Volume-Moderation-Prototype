@@ -12,7 +12,7 @@ module.exports = {
         .setDescription('True to enable violation resets, false to disable them.')
         .setRequired(true)
     )
-    // Requires Manage Guild permission for the user invoking the command.
+  // Requires Manage Guild permission for the user invoking the command.
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
   async execute(interaction) {
     const guildId = interaction.guildId
