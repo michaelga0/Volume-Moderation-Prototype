@@ -39,6 +39,14 @@ module.exports = {
         serverSettings = await ServerSettings.create({ guild_id: guildId })
       }
 
+      if (!serverSettings.violation_reset_enabled) {
+        await interaction.reply({
+          content: 'Violation reset is not enabled. Enable it before using this command.',
+          flags: MessageFlags.Ephemeral
+        })
+        return
+      }
+
       if (days === null && hours === null && minutes === null) {
         await interaction.reply({
           content: 
