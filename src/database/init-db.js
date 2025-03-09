@@ -1,6 +1,7 @@
 require('dotenv').config()
 const path = require('path')
 const { Sequelize, DataTypes } = require('sequelize')
+const { DEFAULT_MUTE_THRESHOLD, DEFAULT_TIMEOUT_THRESHOLD, DEFAULT_KICK_THRESHOLD } = require('../utils/constants')
 
 const DB_TYPE = process.env.DB_TYPE || 'sqlite'
 
@@ -58,15 +59,15 @@ const ServerSettings = sequelize.define('server_settings', {
   },
   mute_threshold: {
     type: DataTypes.INTEGER,
-    defaultValue: 5
+    defaultValue: DEFAULT_MUTE_THRESHOLD
   },
   timeout_threshold: {
     type: DataTypes.INTEGER,
-    defaultValue: 7
+    defaultValue: DEFAULT_TIMEOUT_THRESHOLD
   },
   kick_threshold: {
     type: DataTypes.INTEGER,
-    defaultValue: 9
+    defaultValue: DEFAULT_KICK_THRESHOLD
   },
   timeout_duration: {
     type: DataTypes.INTEGER,
