@@ -7,7 +7,8 @@ export default [
     languageOptions: { sourceType: 'commonjs' },
     rules: {
       quotes: ['error', 'single', { avoidEscape: true }],
-      indent: ['error', 2]
+      indent: ['error', 2],
+      'spaced-comment': ['error', 'always']
     }
   },
   {
