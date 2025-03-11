@@ -5,7 +5,9 @@ const { writeLog } = require('../utils/logger')
 // 48k samples/sec, 2 channels, 16 bits => 4 bytes/sample * 48k = 192k bytes/sec
 const BYTES_PER_SECOND = 48000 * 4
 // Duration in seconds for volume checks
-const DURATION = 3
+const DURATION = 1
+// Delay in milliseconds before recording resumes after a window is processed
+const RECORDING_DELAY = 3000
 const WINDOW_SIZE = BYTES_PER_SECOND * DURATION
 // Volume above this RMS threshold is considered too loud
 const DEFAULT_THRESHOLD = 10000
@@ -112,11 +114,12 @@ function handleVoiceStateUpdate(oldState, newState) {
  */
 function createRecorder(member, receiver) {
   const opus = receiver.subscribe(member.id, { end: { behavior: EndBehaviorType.Manual } })
-  const decoder = new prism.opus.Decoder({ frameSize: 960, channels: 2, rate: 48000 })
+  let decoder = new prism.opus.Decoder({ frameSize: 960, channels: 2, rate: 48000 })
   let buffer = Buffer.alloc(0)
 
   opus.pipe(decoder)
-  decoder.on('data', (chunk) => {
+
+  const onData = (chunk) => {
     buffer = Buffer.concat([buffer, chunk])
     if (buffer.length >= WINDOW_SIZE) {
       const rms = computeRMS(buffer)
@@ -126,10 +129,30 @@ function createRecorder(member, receiver) {
           rms,
           guildId: member.guild.id
         })
+        decoder.removeAllListeners('data')
+        decoder.destroy()
+        buffer = Buffer.alloc(0)
+
+        // Unpipe and flush the underlying opus stream
+        opus.unpipe(decoder)
+        opus.pause()
+        while (opus.read() !== null) {}
+        opus.resume()
+
+        setTimeout(() => {
+          // Re-create decoder and resume piping after delay
+          decoder = new prism.opus.Decoder({ frameSize: 960, channels: 2, rate: 48000 })
+          recorders.get(member.id).decoder = decoder
+          opus.pipe(decoder)
+          decoder.on('data', onData)
+        }, RECORDING_DELAY)
+      } else {
+        buffer = Buffer.alloc(0)
       }
-      buffer = Buffer.alloc(0)
     }
-  })
+  }
+
+  decoder.on('data', onData)
 
   recorders.set(member.id, { opus, decoder, buffer, member })
   writeLog(`Started monitoring user: ${member.user.tag}`)
