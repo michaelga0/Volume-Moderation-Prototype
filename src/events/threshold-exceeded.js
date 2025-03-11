@@ -61,14 +61,20 @@ module.exports = {
       // Re-fetch to get updated punishmentStatus if it changed
       await violation.reload()
 
-      if (violation.punishment_status === KICK_STATUS) return
+      try {
+        await member.guild.members.fetch({ user: member.id, force: true })
+      } catch (error) {
+        if (error.code === 10007) return
+        throw error
+      }
 
       let dmMessage = 'You\'re too loud. Please lower your volume.'
       const warningsLeftMsg = calculateWarningsUntilNext(
         violation.violations_count,
         violation.punishment_status,
         violation.exempt,
-        serverSettings
+        serverSettings,
+        member
       )
       if (warningsLeftMsg) {
         dmMessage += `\n${warningsLeftMsg}`
