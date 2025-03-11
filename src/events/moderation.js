@@ -60,6 +60,7 @@ async function applyNextPunishment(member, violation, serverSettings) {
  * @param {number} punishment_status - The user's current punishment status.
  * @param {boolean} exempt - If true, user is exempt from punishments.
  * @param {ServerSettings} serverSettings - The row from server_settings with threshold & enabled flags.
+ * @param {GuildMember} member - The guild member to send the message to
  * @returns {string|null} A message about how many warnings remain, or null if exempt or fully punished.
  */
 function calculateWarningsUntilNext(violations_count, punishment_status, exempt, serverSettings, member) {
