@@ -4,7 +4,7 @@ const { writeLog } = require('../utils/logger')
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('set-timeout-duration')
+    .setName('settimeoutduration')
     .setDescription('Set the timeout duration (in minutes) for this server. Must be at least 1.')
     .addIntegerOption(option =>
       option
