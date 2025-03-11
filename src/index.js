@@ -43,7 +43,7 @@ client.once('ready', async () => {
     writeLog('Database connection established.')
   } catch (err) {
     writeLog(`Error initializing the database: ${err}`)
-    process.exit(1);
+    process.exit(1)
   }
 
   try {
