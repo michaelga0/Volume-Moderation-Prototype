@@ -139,13 +139,18 @@ function createRecorder(member, receiver) {
         while (opus.read() !== null) {}
         opus.resume()
 
-        setTimeout(() => {
-          // Re-create decoder and resume piping after delay
-          decoder = new prism.opus.Decoder({ frameSize: 960, channels: 2, rate: 48000 })
-          recorders.get(member.id).decoder = decoder
-          opus.pipe(decoder)
-          decoder.on('data', onData)
-        }, RECORDING_DELAY)
+        if (!opus.destroyed) {
+          setTimeout(() => {
+            // Re-create decoder and resume piping after delay
+            decoder = new prism.opus.Decoder({ frameSize: 960, channels: 2, rate: 48000 })
+            const recorder = recorders.get(member.id)
+            if (recorder !== undefined) {
+              recorder.decoder = decoder
+              opus.pipe(decoder)
+              decoder.on('data', onData)
+            }
+          }, RECORDING_DELAY)
+        }
       } else {
         buffer = Buffer.alloc(0)
       }
