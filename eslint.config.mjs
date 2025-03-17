@@ -1,5 +1,3 @@
-import globals from 'globals';
-
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   {
@@ -11,8 +9,5 @@ export default [
       'spaced-comment': ['error', 'always'],
       semi: ['error', 'never']
     }
-  },
-  {
-    languageOptions: { globals: globals.browser }
   }
 ];
