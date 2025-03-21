@@ -19,22 +19,20 @@ const mockGuild = { id: 'mockGuildId' }
 
 const mockMember = {
   id: '12345',
-  user: {
-    bot: false,
-    id: '12345',
-    tag: 'TestUser#1234'
-  },
+  user: { bot: false, id: '12345', tag: 'TestUser#1234' },
+  guild: mockGuild
+}
+
+const mockMember2 = {
+  id: '67890',
+  user: { bot: false, id: '67890', tag: 'SecondUser#5678' },
   guild: mockGuild
 }
 
 const mockVoiceConnection = {
   destroy: jest.fn(),
-  receiver: {
-    subscribe: jest.fn(() => createMockOpusStream())
-  },
-  joinConfig: {
-    channelId: 'mockChannelId'
-  }
+  receiver: { subscribe: jest.fn(() => createMockOpusStream()) },
+  joinConfig: { channelId: 'mockChannelId' }
 }
 
 const mockVoiceChannel = {
@@ -44,17 +42,26 @@ const mockVoiceChannel = {
     forEach: jest.fn(callback => {
       callback(mockMember)
     }),
-    filter: jest.fn(callback => {
-      return [mockMember].filter(callback)
-    })
+    filter: jest.fn(callback => [mockMember].filter(callback))
+  }
+}
+
+const mockVoiceChannel2 = {
+  name: 'Second Mock Channel',
+  guild: mockGuild,
+  members: {
+    forEach: jest.fn(callback => {
+      callback(mockMember)
+      callback(mockMember2)
+    }),
+    filter: jest.fn(callback => [mockMember, mockMember2].filter(callback))
   }
 }
 
 module.exports = {
-  EndBehaviorType: {
-    Manual: 'manual'
-  },
+  EndBehaviorType: { Manual: 'manual' },
   getVoiceConnection: jest.fn().mockImplementation(() => mockVoiceConnection),
   joinVoiceChannel: jest.fn().mockImplementation(() => mockVoiceConnection),
-  mockVoiceChannel
+  mockVoiceChannel,
+  mockVoiceChannel2
 }
