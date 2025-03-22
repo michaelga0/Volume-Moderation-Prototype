@@ -1,5 +1,5 @@
-const { MockClient } = require('../mocks/mock-client')
-const { getVoiceConnection, mockVoiceChannel, mockVoiceChannel2 } = require('../mocks/mock-voice')
+const { MockClient } = require('../../mocks/mock-client')
+const { getVoiceConnection, mockVoiceChannel, mockVoiceChannel2 } = require('../../mocks/mock-voice')
 
 // Delay in case voice monitor has paused monitoring for 3 seconds, prevents timeout error
 const RECORDING_DELAY = 3000
@@ -7,7 +7,7 @@ const RECORDING_DELAY = 3000
 beforeEach(() => {
   jest.resetModules()
   jest.isolateModules(() => {
-    const voiceMonitor = require('../../src/audio/voice-monitor')
+    const voiceMonitor = require('../../../src/audio/voice-monitor')
     startMonitoring = voiceMonitor.startMonitoring
     stopMonitoring = voiceMonitor.stopMonitoring
   })
