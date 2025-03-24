@@ -3,20 +3,24 @@ const path = require('path')
 const { Sequelize, DataTypes } = require('sequelize')
 const { DEFAULT_MUTE_THRESHOLD, DEFAULT_TIMEOUT_THRESHOLD, DEFAULT_KICK_THRESHOLD } = require('../utils/constants')
 
-const DB_TYPE = process.env.DB_TYPE || 'sqlite'
-
 let sequelize
 
-if (DB_TYPE === 'sqlite') {
-  sequelize = new Sequelize({
-    dialect: 'sqlite',
-    storage: path.join(__dirname, '../../db.sqlite'),
+if (
+  process.env.DB_HOST &&
+  process.env.DB_NAME &&
+  process.env.DB_USER &&
+  process.env.DB_PASSWORD &&
+  process.env.DB_TYPE
+) {
+  sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_TYPE,
     logging: false
   })
 } else {
-  sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    dialect: DB_TYPE,
+  sequelize = new Sequelize({
+    dialect: 'sqlite',
+    storage: path.join(__dirname, '../../db.sqlite'),
     logging: false
   })
 }
