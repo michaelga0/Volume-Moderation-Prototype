@@ -4,6 +4,10 @@ const { getVoiceConnection, mockVoiceChannel, mockVoiceChannel2 } = require('../
 // Delay in case voice monitor has paused monitoring for 3 seconds, prevents timeout error
 const RECORDING_DELAY = 3000
 
+jest.mock('../../../src/utils/logger', () => ({
+  writeLog: jest.fn()
+}))
+
 beforeEach(() => {
   jest.resetModules()
   jest.isolateModules(() => {
