@@ -24,27 +24,32 @@ Leaves the current voice channel if you are in the same one as the bot.
 ### /set-kick-threshold
 **Parameters**: `threshold` (integer, optional)  
 **Usage**: `/set-kick-threshold threshold:<integer>`  
+Set the number of noise violations before the user is kicked.
 If `threshold` is not specified, the current kick threshold is shown; otherwise, it is set to the provided value.
 
 ### /set-mute-threshold
 **Parameters**: `threshold` (integer, optional)  
 **Usage**: `/set-mute-threshold threshold:<integer>`  
+Set the number of noise violations before the user is muted.
 If `threshold` is not specified, the current mute threshold is shown; otherwise, it is set to the provided value.
 
 ### /set-timeout-threshold
 **Parameters**: `threshold` (integer, optional)  
 **Usage**: `/set-timeout-threshold threshold:<integer>`  
+Set the number of noise violations before the user is timed out.
 If `threshold` is not specified, the current timeout threshold is shown; otherwise, it is set to the provided value.
 
 ### /set-timeout-duration
 **Parameters**: `minutes` (integer, optional)  
 **Usage**: `/set-timeout-duration minutes:<integer>`  
+Set the number of minutes the user is timed out for.
 If `minutes` is not specified, the current timeout duration is shown; otherwise, it is set to the provided value (must be >= 1).
 
 ### /set-violation-reset
 **Parameters**: `days` (integer, optional), `hours` (integer, optional), `minutes` (integer, optional)  
 **Usage**: `/set-violation-reset days:<integer> hours:<integer> minutes:<integer>`  
-If none are specified, the current violation reset interval is shown; otherwise, it is set to the provided values (with overflow handled).
+Set the amount of time before the number of violations counted are reset.
+If none are specified, the current violation reset interval is shown; otherwise, it is set to the provided values.
 
 ### /toggle-kick
 **Parameters**: `enabled` (boolean, required)  
@@ -70,7 +75,8 @@ Enables or disables the violation reset timer.
 **Parameters**:  
 - `user` (required)  
 - `exempt` (boolean, optional)  
-**Usage**: `/toggle-user-exempt user:@username exempt:<true|false>`  
+**Usage**: `/toggle-user-exempt user:@username exempt:<true|false>`
+Exempt a user from any moderation actions.
 If `exempt` is not specified, the user’s current exemption status is shown; otherwise, it is set to the provided value.
 
 </details>
