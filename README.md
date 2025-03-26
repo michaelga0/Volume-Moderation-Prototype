@@ -2,6 +2,9 @@
 
 A Discord bot that joins a voice channel, monitors user volume levels in real time, and warns users if their volume exceeds a certain threshold.
 
+<details open>
+<summary>Commands</summary>
+
 ## Commands
 
 ### /join
@@ -64,8 +67,13 @@ Enables or disables the violation reset timer.
 **Usage**: `/toggle-user-exempt user:@username exempt:<true|false>`  
 If `exempt` is not specified, the user’s current exemption status is shown; otherwise, it is set to the provided value.
 
+</details>
+
+<details>
+<summary>Instructions</summary>
 
 ## Self-Hosting Instructions
+
 ### Prerequisites
 
 1. **Node.js** (v22 or higher recommended)  
@@ -88,4 +96,5 @@ If `exempt` is not specified, the user’s current exemption status is shown; ot
   ```bash
   node .
   ```
-
+   
+</details>
