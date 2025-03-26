@@ -1,5 +1,5 @@
 const { MUTE_STATUS, TIMEOUT_STATUS, KICK_STATUS } = require('../utils/constants')
-const { executePunishment } = require('./punishment')
+const { executePunishment } = require('./punish')
 
 /**
  * Applies exactly one new punishment threshold if the user hasn't already reached it.

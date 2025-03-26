@@ -1,6 +1,6 @@
 const { writeLog } = require('../utils/logger')
 const { Violation, ServerSettings } = require('../database/init-db')
-const { applyNextPunishment, calculateWarningsUntilNext } = require('./moderation')
+const { applyNextPunishment, calculateWarningsUntilNext } = require('../moderation/punishment-handler')
 const { sendDM } = require('../utils/direct-message')
 
 module.exports = {
