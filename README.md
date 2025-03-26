@@ -70,7 +70,7 @@ If `exempt` is not specified, the user’s current exemption status is shown; ot
 </details>
 
 <details>
-<summary>Instructions</summary>
+<summary>Self-Hosting Instructions</summary>
 
 ## Self-Hosting Instructions
 
