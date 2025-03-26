@@ -1,6 +1,15 @@
 # Volume Moderation Prototype
 
-A Discord bot that joins a voice channel, monitors user volume levels in real time, and warns users if their volume exceeds a certain threshold.
+A Discord bot for real‑time audio moderation that detects when users speak too loudly.
+
+- Perform moderation actions including warnings, mutes, timeouts, and kicks  
+- Automated moderation escalation based on repeat offenses  
+- Customizable settings via slash commands - adjust thresholds or toggle certain moderation actions on and off
+
+</br>
+
+<details open>
+<summary>Commands</summary>
 
 ## Commands
 
@@ -64,14 +73,19 @@ Enables or disables the violation reset timer.
 **Usage**: `/toggle-user-exempt user:@username exempt:<true|false>`  
 If `exempt` is not specified, the user’s current exemption status is shown; otherwise, it is set to the provided value.
 
+</details>
+
+<details>
+<summary>Self-Hosting Instructions</summary>
 
 ## Self-Hosting Instructions
+
 ### Prerequisites
 
 1. **Node.js** (v22 or higher recommended)  
 2. **Discord Application**  
    - Create a new application and bot in the [Discord Developer Portal](https://discord.com/developers/applications).  
-   - Copy your bot token (you will place this into a `.env` file).discofrd.js 
+   - Copy your bot token (you will place this into a `.env` file).
 
 ### Installation
 
@@ -88,4 +102,5 @@ If `exempt` is not specified, the user’s current exemption status is shown; ot
   ```bash
   node .
   ```
-
+   
+</details>
