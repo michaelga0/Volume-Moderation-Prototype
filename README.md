@@ -1,6 +1,12 @@
 # Volume Moderation Prototype
 
-A Discord bot that joins a voice channel, monitors user volume levels in real time, and warns users if their volume exceeds a certain threshold.
+A Discord bot for real‑time audio moderation that detects when users speak too loudly.
+
+- Perform moderation actions including warnings, mutes, timeouts, and kicks  
+- Automated moderation escalation based on repeat offenses  
+- Customizable settings via slash commands - adjust thresholds or toggle certain moderation actions on and off
+
+</br>
 
 <details open>
 <summary>Commands</summary>
