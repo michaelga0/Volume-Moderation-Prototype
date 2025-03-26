@@ -6,6 +6,8 @@ const { REST } = require('@discordjs/rest')
 const { writeLog } = require('./utils/logger')
 const { initDB } = require('./database/init-db')
 
+const DEVELOPER_MODE = process.env.DEVELOPER_MODE === 'true'
+
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates],
 })
@@ -47,10 +49,19 @@ client.once('ready', async () => {
   }
 
   try {
-    await rest.put(
-      Routes.applicationCommands(client.user.id, process.env.TEST_GUILD_ID),
-      { body: commands }
-    )
+    if (DEVELOPER_MODE) {
+      await rest.put(
+        Routes.applicationCommands(client.user.id, process.env.TEST_GUILD_ID),
+        { body: commands }
+      )
+    }
+    else {
+      await rest.put(
+        Routes.applicationCommands(client.user.id),
+        { body: commands }
+      )
+    }
+    
   } catch (error) {
     writeLog(`Error registering slash commands: ${error}`)
   }
