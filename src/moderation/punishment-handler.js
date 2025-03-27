@@ -1,5 +1,6 @@
 const { MUTE_STATUS, TIMEOUT_STATUS, KICK_STATUS } = require('../utils/constants')
 const { executePunishment } = require('./punish')
+const { PermissionsBitField } = require('discord.js')
 
 /**
  * Applies exactly one new punishment threshold if the user hasn't already reached it.
@@ -117,7 +118,7 @@ function calculateWarningsUntilNext(violations_count, punishment_status, exempt,
  */
 function hasPermission(member, action) {
   if (action === MUTE_STATUS) {
-    return member.guild.members.me.permissions.has('MUTE_MEMBERS')
+    return member.guild.members.me.permissions.has(PermissionsBitField.Flags.MuteMembers)
   } else if (action === TIMEOUT_STATUS) {
     return member.moderatable
   } else if (action === KICK_STATUS) {
