@@ -2,7 +2,8 @@
 
 A Discord bot for real‑time audio moderation that detects when users speak too loudly.
 
-- Perform moderation actions including warnings, mutes, timeouts, and kicks  
+- Warn users with direct message when they speak too loudly
+- Perform moderation actions including mutes, timeouts, and kicks  
 - Automated moderation escalation based on repeat offenses  
 - Customizable settings via slash commands - adjust thresholds or toggle certain moderation actions on and off
 
