@@ -54,98 +54,146 @@ describe('join command', () => {
     mockDB.__testViolationData.length = 0
   })
 
-  it('creates new server settings if none exist', async () => {
-    ServerSettings.findOne.mockResolvedValueOnce(null)
-    mockInteraction.guild.members.fetch.mockResolvedValueOnce({
-      voice: {
-        channel: {
-          id: 'chanId',
-          guild: { id: 'guildId', voiceAdapterCreator: {} },
-          name: 'Channel'
+  describe('execute', () => {
+    it('creates new server settings if none exist', async () => {
+      ServerSettings.findOne.mockResolvedValueOnce(null)
+      mockInteraction.guild.members.fetch.mockResolvedValueOnce({
+        voice: {
+          channel: {
+            id: 'chanId',
+            guild: { id: 'guildId', voiceAdapterCreator: {} },
+            name: 'Channel'
+          }
         }
-      }
+      })
+      joinVoiceChannel.mockReturnValueOnce({})
+      await joinCommand.execute(mockInteraction)
+      expect(ServerSettings.findOne).toHaveBeenCalledWith({ where: { guild_id: 'guildId' } })
+      expect(ServerSettings.create).toHaveBeenCalledWith({ guild_id: 'guildId' })
+      expect(mockDB.__testServerSettingsData).toHaveLength(1)
+      expect(mockDB.__testServerSettingsData[0].guild_id).toBe('guildId')
     })
-    joinVoiceChannel.mockReturnValueOnce({})
-    await joinCommand.execute(mockInteraction)
-    expect(ServerSettings.findOne).toHaveBeenCalledWith({ where: { guild_id: 'guildId' } })
-    expect(ServerSettings.create).toHaveBeenCalledWith({ guild_id: 'guildId' })
-    expect(mockDB.__testServerSettingsData).toHaveLength(1)
-    expect(mockDB.__testServerSettingsData[0].guild_id).toBe('guildId')
-  })
 
-  it('does not create server settings if already exists', async () => {
-    ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_threshold: 60 })
-    mockInteraction.guild.members.fetch.mockResolvedValueOnce({
-      voice: {
-        channel: {
-          id: 'chanId',
-          guild: { id: 'guildId', voiceAdapterCreator: {} },
-          name: 'Channel'
+    it('does not create server settings if already exists', async () => {
+      ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_threshold: 60 })
+      mockInteraction.guild.members.fetch.mockResolvedValueOnce({
+        voice: {
+          channel: {
+            id: 'chanId',
+            guild: { id: 'guildId', voiceAdapterCreator: {} },
+            name: 'Channel'
+          }
         }
-      }
+      })
+      joinVoiceChannel.mockReturnValueOnce({})
+      await joinCommand.execute(mockInteraction)
+      expect(ServerSettings.create).not.toHaveBeenCalled()
     })
-    joinVoiceChannel.mockReturnValueOnce({})
-    await joinCommand.execute(mockInteraction)
-    expect(ServerSettings.create).not.toHaveBeenCalled()
-  })
 
-  it('calls doForceLeave if an existing connection is found', async () => {
-    getVoiceConnection.mockReturnValueOnce({})
-    ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_threshold: 50 })
-    mockInteraction.guild.members.fetch.mockResolvedValueOnce({
-      voice: {
-        channel: {
-          id: 'chanId',
-          guild: { id: 'guildId', voiceAdapterCreator: {} },
-          name: 'Channel'
+    it('calls doForceLeave if an existing connection is found', async () => {
+      getVoiceConnection.mockReturnValueOnce({})
+      ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_threshold: 50 })
+      mockInteraction.guild.members.fetch.mockResolvedValueOnce({
+        voice: {
+          channel: {
+            id: 'chanId',
+            guild: { id: 'guildId', voiceAdapterCreator: {} },
+            name: 'Channel'
+          }
         }
-      }
+      })
+      joinVoiceChannel.mockReturnValueOnce({})
+      await joinCommand.execute(mockInteraction)
+      expect(doForceLeave).toHaveBeenCalledWith('guildId')
     })
-    joinVoiceChannel.mockReturnValueOnce({})
-    await joinCommand.execute(mockInteraction)
-    expect(doForceLeave).toHaveBeenCalledWith('guildId')
-  })
 
-  it('replies ephemeral if user not in voice channel', async () => {
-    ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_threshold: 50 })
-    mockInteraction.guild.members.fetch.mockResolvedValueOnce({
-      voice: { channel: null }
+    it('replies ephemeral if user not in voice channel', async () => {
+      ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_threshold: 50 })
+      mockInteraction.guild.members.fetch.mockResolvedValueOnce({
+        voice: { channel: null }
+      })
+      await joinCommand.execute(mockInteraction)
+      expect(mockInteraction.reply).toHaveBeenCalledWith({
+        content: 'Please join a voice channel first.',
+        flags: 64
+      })
     })
-    await joinCommand.execute(mockInteraction)
-    expect(mockInteraction.reply).toHaveBeenCalledWith({
-      content: 'Please join a voice channel first.',
-      flags: 64
-    })
-  })
 
-  it('joins and starts monitoring with correct threshold', async () => {
-    ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_threshold: 40 })
-    mockInteraction.guild.members.fetch.mockResolvedValueOnce({
-      voice: {
-        channel: {
-          id: 'chanId',
-          guild: { id: 'guildId', voiceAdapterCreator: {} },
-          name: 'Channel'
+    it('joins and starts monitoring with correct threshold', async () => {
+      ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_threshold: 40 })
+      mockInteraction.guild.members.fetch.mockResolvedValueOnce({
+        voice: {
+          channel: {
+            id: 'chanId',
+            guild: { id: 'guildId', voiceAdapterCreator: {} },
+            name: 'Channel'
+          }
         }
-      }
+      })
+      joinVoiceChannel.mockReturnValueOnce({})
+      await joinCommand.execute(mockInteraction)
+      expect(joinVoiceChannel).toHaveBeenCalled()
+      expect(startMonitoring).toHaveBeenCalledWith(
+        mockInteraction.client,
+        {},
+        { id: 'chanId', guild: { id: 'guildId', voiceAdapterCreator: {} }, name: 'Channel' },
+        2500 + (40 * 100)
+      )
     })
-    joinVoiceChannel.mockReturnValueOnce({})
-    await joinCommand.execute(mockInteraction)
-    expect(joinVoiceChannel).toHaveBeenCalled()
-    expect(startMonitoring).toHaveBeenCalledWith(
-      mockInteraction.client,
-      {},
-      { id: 'chanId', guild: { id: 'guildId', voiceAdapterCreator: {} }, name: 'Channel' },
-      2500 + (40 * 100)
-    )
+
+    it('handles errors', async () => {
+      ServerSettings.findOne.mockRejectedValueOnce(new Error('fail'))
+      await joinCommand.execute(mockInteraction)
+      expect(mockInteraction.reply).toHaveBeenCalledWith({
+        content: 'Failed to join the voice channel.',
+        flags: 64
+      })
+    })
   })
 
-  it('handles errors', async () => {
-    ServerSettings.findOne.mockRejectedValueOnce(new Error('fail'))
-    await joinCommand.execute(mockInteraction)
-    expect(mockInteraction.reply).toHaveBeenCalledWith({
-      content: 'Failed to join the voice channel.',
-      flags: 64
+  describe('doJoin', () => {
+    it('replies if user not in voice channel', async () => {
+      mockInteraction.guild.members.fetch.mockResolvedValueOnce({
+        voice: { channel: null }
+      })
+      await joinCommand.doJoin(mockInteraction, { volume_threshold: 50 })
+      expect(mockInteraction.reply).toHaveBeenCalledWith({
+        content: 'Please join a voice channel first.',
+        flags: 64
+      })
+      expect(joinVoiceChannel).not.toHaveBeenCalled()
+    })
+
+    it('joins the channel and starts monitoring', async () => {
+      mockInteraction.guild.members.fetch.mockResolvedValueOnce({
+        voice: {
+          channel: {
+            id: 'chanId',
+            guild: { id: 'guildId', voiceAdapterCreator: {} },
+            name: 'Channel'
+          }
+        }
+      })
+      joinVoiceChannel.mockReturnValueOnce({})
+      await joinCommand.doJoin(mockInteraction, { volume_threshold: 40 })
+      expect(joinVoiceChannel).toHaveBeenCalled()
+      expect(startMonitoring).toHaveBeenCalled()
+      expect(mockInteraction.reply).toHaveBeenCalledWith({
+        content: 'Joined the voice channel.',
+        flags: 64
+      })
+    })
+
+    it('handles errors thrown during join', async () => {
+      mockInteraction.guild.members.fetch.mockImplementation(() => {
+        throw new Error('fetch fail')
+      })
+      await joinCommand.doJoin(mockInteraction, { volume_threshold: 60 })
+      expect(mockInteraction.reply).toHaveBeenCalledWith({
+        content: 'Failed to join the voice channel.',
+        flags: 64
+      })
+      expect(writeLog).toHaveBeenCalledWith(expect.stringContaining('Error joining voice channel: Error: fetch fail'))
     })
   })
 })
