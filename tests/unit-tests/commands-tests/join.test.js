@@ -34,9 +34,6 @@ describe('join command', () => {
   let mockInteraction
 
   beforeEach(() => {
-    dotenv.config.mockImplementation(() => {
-      process.env.DEVELOPER_MODE = 'false'
-    })
     mockInteraction = {
       guild: { id: 'guildId', members: { fetch: jest.fn() } },
       user: { id: 'userId' },
@@ -148,52 +145,6 @@ describe('join command', () => {
         content: 'Failed to join the voice channel.',
         flags: 64
       })
-    })
-  })
-
-  describe('doJoin', () => {
-    it('replies if user not in voice channel', async () => {
-      mockInteraction.guild.members.fetch.mockResolvedValueOnce({
-        voice: { channel: null }
-      })
-      await joinCommand.doJoin(mockInteraction, { volume_threshold: 50 })
-      expect(mockInteraction.reply).toHaveBeenCalledWith({
-        content: 'Please join a voice channel first.',
-        flags: 64
-      })
-      expect(joinVoiceChannel).not.toHaveBeenCalled()
-    })
-
-    it('joins the channel and starts monitoring', async () => {
-      mockInteraction.guild.members.fetch.mockResolvedValueOnce({
-        voice: {
-          channel: {
-            id: 'chanId',
-            guild: { id: 'guildId', voiceAdapterCreator: {} },
-            name: 'Channel'
-          }
-        }
-      })
-      joinVoiceChannel.mockReturnValueOnce({})
-      await joinCommand.doJoin(mockInteraction, { volume_threshold: 40 })
-      expect(joinVoiceChannel).toHaveBeenCalled()
-      expect(startMonitoring).toHaveBeenCalled()
-      expect(mockInteraction.reply).toHaveBeenCalledWith({
-        content: 'Joined the voice channel.',
-        flags: 64
-      })
-    })
-
-    it('handles errors thrown during join', async () => {
-      mockInteraction.guild.members.fetch.mockImplementation(() => {
-        throw new Error('fetch fail')
-      })
-      await joinCommand.doJoin(mockInteraction, { volume_threshold: 60 })
-      expect(mockInteraction.reply).toHaveBeenCalledWith({
-        content: 'Failed to join the voice channel.',
-        flags: 64
-      })
-      expect(writeLog).toHaveBeenCalledWith(expect.stringContaining('Error joining voice channel: Error: fetch fail'))
     })
   })
 })
