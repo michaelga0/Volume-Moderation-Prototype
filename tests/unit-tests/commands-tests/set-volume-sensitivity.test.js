@@ -58,7 +58,7 @@ describe('set-volume-sensitivity', () => {
 
   it('creates new server settings if none exist and shows current sensitivity if none provided', async () => {
     ServerSettings.findOne.mockResolvedValueOnce(null)
-    ServerSettings.create.mockResolvedValueOnce({ volume_threshold: 50 })
+    ServerSettings.create.mockResolvedValueOnce({ volume_sensitivity: 50 })
     interaction.options.getInteger.mockReturnValue(null)
     await setVolumeSensitivity.execute(interaction)
     expect(ServerSettings.create).toHaveBeenCalledWith({ guild_id: 'testGuildId' })
@@ -69,7 +69,7 @@ describe('set-volume-sensitivity', () => {
   })
 
   it('shows current sensitivity if record exists but no sensitivity is provided', async () => {
-    ServerSettings.findOne.mockResolvedValueOnce({ volume_threshold: 75 })
+    ServerSettings.findOne.mockResolvedValueOnce({ volume_sensitivity: 75 })
     interaction.options.getInteger.mockReturnValue(null)
     await setVolumeSensitivity.execute(interaction)
     expect(interaction.reply).toHaveBeenCalledWith({
@@ -81,14 +81,14 @@ describe('set-volume-sensitivity', () => {
   it('sets the sensitivity if provided', async () => {
     const mockSettings = {
       guild_id: 'testGuildId',
-      volume_threshold: 50,
+      volume_sensitivity: 50,
       save: jest.fn()
     }
     ServerSettings.findOne.mockResolvedValueOnce(mockSettings)
     interaction.options.getInteger.mockReturnValue(30)
     getVoiceConnection.mockReturnValue(null)
     await setVolumeSensitivity.execute(interaction)
-    expect(mockSettings.volume_threshold).toBe(30)
+    expect(mockSettings.volume_sensitivity).toBe(30)
     expect(mockSettings.save).toHaveBeenCalled()
     expect(interaction.reply).toHaveBeenCalledWith({
       content: 'Volume sensitivity has been set to **30**.',
@@ -116,7 +116,7 @@ describe('set-volume-sensitivity', () => {
     it('calls doForceLeave and doJoin if getVoiceConnection returns a connection', async () => {
       const mockSettings = {
         guild_id: 'testGuildId',
-        volume_threshold: 50,
+        volume_sensitivity: 50,
         save: jest.fn()
       }
       ServerSettings.findOne.mockResolvedValueOnce(mockSettings)

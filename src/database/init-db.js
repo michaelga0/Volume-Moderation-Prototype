@@ -109,7 +109,7 @@ const ServerSettings = sequelize.define('server_settings', {
     type: DataTypes.BOOLEAN,
     defaultValue: true
   },
-  volume_threshold: {
+  volume_sensitivity: {
     type: DataTypes.DECIMAL(3, 0),
     allowNull: false,
     defaultValue: 50,

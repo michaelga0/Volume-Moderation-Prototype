@@ -18,7 +18,7 @@ async function doJoin(voiceChannel, client, serverSettings) {
 
   // Developer threshold of 1000, so I don't get evicted
   // Volume threshold is a percentage, scale it between 2500 and 12500
-  const threshold = DEVELOPER_MODE ? 1000 : 2500 + (serverSettings.volume_threshold * 100)
+  const threshold = DEVELOPER_MODE ? 1000 : 2500 + ((100 - serverSettings.volume_sensitivity) * 100)
 
   startMonitoring(client, connection, voiceChannel, threshold)
 }

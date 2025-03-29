@@ -28,13 +28,13 @@ module.exports = {
 
       if (sensitivity === null) {
         await interaction.reply({
-          content: `Current volume sensitivity is **${serverSettings.volume_threshold}**.`,
+          content: `Current volume sensitivity is **${serverSettings.volume_sensitivity}**.`,
           flags: MessageFlags.Ephemeral
         })
         return
       }
 
-      serverSettings.volume_threshold = sensitivity
+      serverSettings.volume_sensitivity = sensitivity
       await serverSettings.save()
 
 

@@ -72,7 +72,7 @@ describe('join command', () => {
     })
 
     it('does not create server settings if already exists', async () => {
-      ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_threshold: 60 })
+      ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_sensitivity: 60 })
       mockInteraction.guild.members.fetch.mockResolvedValueOnce({
         voice: {
           channel: {
@@ -89,7 +89,7 @@ describe('join command', () => {
 
     it('calls doForceLeave if an existing connection is found', async () => {
       getVoiceConnection.mockReturnValueOnce({})
-      ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_threshold: 50 })
+      ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_sensitivity: 50 })
       mockInteraction.guild.members.fetch.mockResolvedValueOnce({
         voice: {
           channel: {
@@ -105,7 +105,7 @@ describe('join command', () => {
     })
 
     it('replies ephemeral if user not in voice channel', async () => {
-      ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_threshold: 50 })
+      ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_sensitivity: 50 })
       mockInteraction.guild.members.fetch.mockResolvedValueOnce({
         voice: { channel: null }
       })
@@ -117,7 +117,7 @@ describe('join command', () => {
     })
 
     it('joins and starts monitoring with correct threshold', async () => {
-      ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_threshold: 40 })
+      ServerSettings.findOne.mockResolvedValueOnce({ guild_id: 'guildId', volume_sensitivity: 40 })
       mockInteraction.guild.members.fetch.mockResolvedValueOnce({
         voice: {
           channel: {
