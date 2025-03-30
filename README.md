@@ -22,62 +22,67 @@ Joins your current voice channel and begins monitoring volume levels.
 **Usage**: `/leave`
 Leaves the current voice channel if you are in the same one as the bot.
 
-### /set-kick-threshold
+### /setkickthreshold
 **Parameters**: `threshold` (integer, optional)  
-**Usage**: `/set-kick-threshold threshold:<integer>`  
-Set the number of noise violations before the user is kicked.
+**Usage**: `/setkickthreshold threshold:<integer>`  
+Set the number of noise violations before the user is kicked.  
 If `threshold` is not specified, the current kick threshold is shown; otherwise, it is set to the provided value.
 
-### /set-mute-threshold
+### /setmutethreshold
 **Parameters**: `threshold` (integer, optional)  
-**Usage**: `/set-mute-threshold threshold:<integer>`  
-Set the number of noise violations before the user is muted.
+**Usage**: `/setmutethreshold threshold:<integer>`  
+Set the number of noise violations before the user is muted.  
 If `threshold` is not specified, the current mute threshold is shown; otherwise, it is set to the provided value.
 
-### /set-timeout-threshold
+### /settimeoutthreshold
 **Parameters**: `threshold` (integer, optional)  
-**Usage**: `/set-timeout-threshold threshold:<integer>`  
-Set the number of noise violations before the user is timed out.
+**Usage**: `/settimeoutthreshold threshold:<integer>`  
+Set the number of noise violations before the user is timed out.  
 If `threshold` is not specified, the current timeout threshold is shown; otherwise, it is set to the provided value.
 
-### /set-timeout-duration
+### /settimeoutduration
 **Parameters**: `minutes` (integer, optional)  
-**Usage**: `/set-timeout-duration minutes:<integer>`  
-Set the number of minutes the user is timed out for.
+**Usage**: `/settimeoutduration minutes:<integer>`  
+Set the number of minutes the user is timed out for.  
 If `minutes` is not specified, the current timeout duration is shown; otherwise, it is set to the provided value (must be >= 1).
 
-### /set-violation-reset
+### /setviolationreset
 **Parameters**: `days` (integer, optional), `hours` (integer, optional), `minutes` (integer, optional)  
-**Usage**: `/set-violation-reset days:<integer> hours:<integer> minutes:<integer>`  
-Set the amount of time before the number of violations counted are reset.
+**Usage**: `/setviolationreset days:<integer> hours:<integer> minutes:<integer>`  
+Set the amount of time before the number of violations counted are reset.  
 If none are specified, the current violation reset interval is shown; otherwise, it is set to the provided values.
 
-### /toggle-kick
+
+### /setvolumesensitivity
+**Parameters**: `sensitivity` (integer, optional)  
+**Usage**: `/setviolationreset sensitivity:<integer>`  
+Set the volume level that needs to be reached before issuing a warning.  
+If `sensitivity` is not specified, the current volume sensitivity is shown; otherwise, it is set to the provided value (must be between 0-100).
+
+### /togglekick
 **Parameters**: `enabled` (boolean, required)  
-**Usage**: `/toggle-kick enabled:<true|false>`  
+**Usage**: `/togglekick enabled:<true|false>`  
 Enables or disables the kick punishment.
 
-### /toggle-mute
+### /togglemute
 **Parameters**: `enabled` (boolean, required)  
-**Usage**: `/toggle-mute enabled:<true|false>`  
+**Usage**: `/togglemute enabled:<true|false>`  
 Enables or disables the mute punishment.
 
-### /toggle-timeout
+### /toggletimeout
 **Parameters**: `enabled` (boolean, required)  
-**Usage**: `/toggle-timeout enabled:<true|false>`  
+**Usage**: `/toggletimeout enabled:<true|false>`  
 Enables or disables the timeout punishment.
 
-### /toggle-violation-reset
+### /toggleviolationreset
 **Parameters**: `enabled` (boolean, required)  
-**Usage**: `/toggle-violation-reset enabled:<true|false>`  
+**Usage**: `/toggleviolationreset enabled:<true|false>`  
 Enables or disables the violation reset timer.
 
-### /toggle-user-exempt
-**Parameters**:  
-- `user` (required)  
-- `exempt` (boolean, optional)  
-**Usage**: `/toggle-user-exempt user:@username exempt:<true|false>`
-Exempt a user from any moderation actions.
+### /toggleuserexempt
+**Parameters**: `user` (required), `exempt` (boolean, optional)  
+**Usage**: `/toggleuserexempt user:@username exempt:<true|false>`
+Exempt a user from any moderation actions.  
 If `exempt` is not specified, the user’s current exemption status is shown; otherwise, it is set to the provided value.
 
 </details>
