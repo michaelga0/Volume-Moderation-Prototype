@@ -134,7 +134,7 @@ describe('join command', () => {
         mockInteraction.client,
         {},
         { id: 'chanId', guild: { id: 'guildId', voiceAdapterCreator: {} }, name: 'Channel' },
-        2500 + (40 * 100)
+        2500 + ((100-40) * 100)
       )
     })
 
