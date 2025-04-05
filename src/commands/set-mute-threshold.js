@@ -6,7 +6,7 @@ const { writeLog } = require('../utils/logger')
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('setmutethreshold')
-    .setDescription('Set the mute threshold for this server.')
+    .setDescription('Set the mute threshold for this server. Leave options blank to view current value.')
     .addIntegerOption(option =>
       option
         .setName('threshold')

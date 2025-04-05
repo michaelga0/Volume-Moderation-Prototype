@@ -6,7 +6,7 @@ const { writeLog } = require('../utils/logger')
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('settimeoutthreshold')
-    .setDescription('Set the timeout threshold for this server.')
+    .setDescription('Set the timeout threshold for this server. Leave options blank to view current value.')
     .addIntegerOption(option =>
       option
         .setName('threshold')

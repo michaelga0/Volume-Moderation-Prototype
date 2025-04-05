@@ -8,7 +8,7 @@ const { doJoin } = require('./join')
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('setvolumesensitivity')
-    .setDescription('Set the volume sensitivity for this server (0-100).')
+    .setDescription('Set the volume sensitivity for this server (0-100). Leave options blank to view current value.')
     .addIntegerOption(option =>
       option
         .setName('sensitivity')
