@@ -51,7 +51,7 @@ module.exports = {
         await interaction.reply({
           content: 
             'Current violation reset time is ' +
-            `${serverSettings.violation_reset_days} day(s),` +
+            `${serverSettings.violation_reset_days} day(s), ` +
             `${serverSettings.violation_reset_hours} hour(s), ${serverSettings.violation_reset_minutes} minute(s).` +
             'Provide at least one argument (days, hours, or minutes) to set the violation reset time.',
           flags: MessageFlags.Ephemeral

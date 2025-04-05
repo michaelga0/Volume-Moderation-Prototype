@@ -43,7 +43,7 @@ describe('set-violation-reset', () => {
     expect(ServerSettings.create).toHaveBeenCalledWith({ guild_id: 'testGuildId' })
     expect(interaction.reply).toHaveBeenCalledWith({
       content:
-        'Current violation reset time is2 day(s),3 hour(s), 10 minute(s).Provide at least one argument (days, hours, or minutes) to set the violation reset time.',
+        'Current violation reset time is 2 day(s), 3 hour(s), 10 minute(s).Provide at least one argument (days, hours, or minutes) to set the violation reset time.',
       flags: 64
     })
   })
@@ -68,7 +68,7 @@ describe('set-violation-reset', () => {
     await setViolationReset.execute(interaction)
     expect(interaction.reply).toHaveBeenCalledWith({
       content:
-        'Current violation reset time is 1 day(s),0 hour(s), 30 minute(s).Provide at least one argument (days, hours, or minutes) to set the violation reset time.',
+        'Current violation reset time is 1 day(s), 0 hour(s), 30 minute(s).Provide at least one argument (days, hours, or minutes) to set the violation reset time.',
       flags: 64
     })
   })
