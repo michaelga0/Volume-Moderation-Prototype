@@ -5,7 +5,7 @@ const { writeLog } = require('../utils/logger')
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('toggleuserexempt')
-    .setDescription('Toggle or view the moderation punishment exemption status for a specified user.')
+    .setDescription('Enable or disable moderation punishment exemption for a specified user.')
     // Requires Manage Guild permission for the user invoking the command.
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
     .addUserOption(option =>
@@ -17,7 +17,7 @@ module.exports = {
     .addBooleanOption(option =>
       option
         .setName('exempt')
-        .setDescription('Set the exemption status explicitly. If omitted, the command will just show the current status.')
+        .setDescription('True to exempt user, false to disable.')
         .setRequired(false)
     ),
 
