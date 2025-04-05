@@ -68,7 +68,7 @@ describe('set-violation-reset', () => {
     await setViolationReset.execute(interaction)
     expect(interaction.reply).toHaveBeenCalledWith({
       content:
-        'Current violation reset time is1 day(s),0 hour(s), 30 minute(s).Provide at least one argument (days, hours, or minutes) to set the violation reset time.',
+        'Current violation reset time is 1 day(s),0 hour(s), 30 minute(s).Provide at least one argument (days, hours, or minutes) to set the violation reset time.',
       flags: 64
     })
   })
