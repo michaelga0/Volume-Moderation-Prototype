@@ -94,7 +94,7 @@ If `exempt` is not specified, the user’s current exemption status is shown; ot
 
 ### Prerequisites
 
-1. **Node.js** (v22 or higher recommended)  
+1. **Node.js** (v22 or higher recommended) , **Python 3.6**
 2. **Discord Application**  
    - Create a new application and bot in the [Discord Developer Portal](https://discord.com/developers/applications).  
    - Copy your bot token (you will place this into a `.env` file).
